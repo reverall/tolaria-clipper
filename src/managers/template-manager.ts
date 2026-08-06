@@ -110,23 +110,41 @@ async function prepareTemplateForSave(template: Template): Promise<[string[], st
 	return [chunks, null];
 }
 
+/**
+ * The default template, shaped for Tolaria's model rather than Obsidian's.
+ *
+ * - The H1 in the body is the title: Tolaria reads it for note lists, search,
+ *   wikilink suggestions and tabs. `title:` frontmatter is only a legacy
+ *   fallback, and keeping both creates two sources of truth that drift.
+ * - The filename is kebab-case and short, because it is secondary to the H1.
+ * - Notes land at the vault root: Tolaria organises by `type` and
+ *   relationships, and never infers a type from a folder.
+ * - `belongs_to` and `related_to` are emitted empty on purpose — that is what
+ *   makes a clip show up in "to process" views, ready to be filed later.
+ * - No `_organized` key, so the clip lands in the Inbox.
+ */
 export function createDefaultTemplate(): Template {
+	const propertyId = () => Date.now().toString() + Math.random().toString(36).slice(2, 11);
+
 	return {
-		id: Date.now().toString() + Math.random().toString(36).slice(2, 11),
+		id: propertyId(),
 		name: getMessage('defaultTemplateName'),
 		behavior: 'create',
-		noteNameFormat: '{{title}}',
-		path: 'Clippings',
-		noteContentFormat: '{{content}}',
+		noteNameFormat: '{{title|kebab_slug}}',
+		path: '',
+		noteContentFormat: '# {{title}}\n\n{{content|strip_h1}}',
 		context: "",
 		properties: [
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'title', value: '{{title}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'source', value: '{{url}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'author', value: '{{author|split:", "|wikilink|join}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'published', value: '{{published}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'created', value: '{{date}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'description', value: '{{description}}' },
-			{ id: Date.now().toString() + Math.random().toString(36).slice(2, 11), name: 'tags', value: 'clippings' }
+			{ id: propertyId(), name: 'type', value: 'Clippings', type: 'keyword' },
+			// `url` is Tolaria's canonical external-link field, with a matching
+			// editor in the Properties panel.
+			{ id: propertyId(), name: 'url', value: '{{url}}', type: 'text' },
+			{ id: propertyId(), name: 'author', value: '{{author|split:", "}}', type: 'multitext' },
+			{ id: propertyId(), name: 'published', value: '{{published}}', type: 'date' },
+			{ id: propertyId(), name: 'created', value: '{{date|date:"YYYY-MM-DD"}}', type: 'date' },
+			{ id: propertyId(), name: 'description', value: '{{description}}', type: 'text' },
+			{ id: propertyId(), name: 'belongs_to', value: '', type: 'relation' },
+			{ id: propertyId(), name: 'related_to', value: '', type: 'relation' }
 		],
 		triggers: []
 	};

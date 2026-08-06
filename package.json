@@ -1,9 +1,9 @@
 {
-	"name": "obsidian-clipper",
+	"name": "tolaria-clipper",
 	"version": "1.7.1",
-	"description": "Official web clipper for Obsidian.",
+	"description": "Web clipper for Tolaria. Saves pages straight into your vault, without launching the app.",
 	"bin": {
-		"obsidian-clipper": "./dist/cli.cjs"
+		"tolaria-clipper": "./dist/cli.cjs"
 	},
 	"files": [
 		"dist"
@@ -30,7 +30,9 @@
 		"update-locales": "ts-node --project scripts/tsconfig.json scripts/update-locales.ts",
 		"check-strings": "ts-node --project scripts/tsconfig.json scripts/check-unused-strings.ts",
 		"add-locale": "ts-node --project scripts/tsconfig.json scripts/add-locale.ts",
-		"prepublishOnly": "npm run build:cli && npm run build:api"
+		"prepublishOnly": "npm run build:cli && npm run build:api && npm run build:host",
+		"build:host": "node scripts/build-host.mjs",
+		"install:local": "npm run build:chrome && npm run build:host && npm run build:cli && node dist/cli.cjs install-extension && node dist/cli.cjs install-host"
 	},
 	"devDependencies": {
 		"@types/chrome": "^0.0.270",

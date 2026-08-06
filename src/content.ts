@@ -12,6 +12,7 @@ import { saveFile } from './utils/file-utils';
 import { debugLog } from './utils/debug';
 import { updateSidebarWidth, addResizeHandle, cleanupResizeHandlers } from './utils/iframe-resize';
 import { parseForClip } from './utils/clip-utils';
+import { CLIPPER_CONTAINER_ID, CLIPPER_IFRAME_ID, stripInjectedUi } from './utils/clipper-dom';
 
 declare global {
 	interface Window {
@@ -31,8 +32,8 @@ declare global {
 	debugLog('Clipper', 'Initializing content script, generation', myGeneration);
 
 	let isHighlighterMode = false;
-	const iframeId = 'obsidian-clipper-iframe';
-	const containerId = 'obsidian-clipper-container';
+	const iframeId = CLIPPER_IFRAME_ID;
+	const containerId = CLIPPER_CONTAINER_ID;
 
 	function removeContainer(container: HTMLElement) {
 		container.classList.add('is-closing');
@@ -217,8 +218,11 @@ declare global {
 				const parseTimeout = new Promise<never>((_, reject) =>
 					setTimeout(() => reject(new Error('parseAsync timeout')), 8000)
 				);
-				const defuddled = await Promise.race([defuddle.parseAsync(), parseTimeout])
+				const parsed = await Promise.race([defuddle.parseAsync(), parseTimeout])
 					.catch(() => defuddle.parse());
+				// Defuddle reads the live document, so the clipper's own side
+				// panel would otherwise be captured as page content.
+				const defuddled = { ...parsed, content: stripInjectedUi(parsed.content) };
 				const extractedContent: { [key: string]: string } = {
 					...defuddled.variables,
 				};
@@ -230,6 +234,10 @@ declare global {
 
 				// Remove all script and style elements
 				doc.querySelectorAll('script, style').forEach(el => el.remove());
+
+				// Drop the clipper's own panel from {{fullHtml}} too. Safe to
+				// mutate here: this is a detached copy, not the live document.
+				doc.querySelectorAll(`#${CLIPPER_CONTAINER_ID}, #${CLIPPER_IFRAME_ID}`).forEach(el => el.remove());
 
 				// Remove style attributes from all elements
 				doc.querySelectorAll('*').forEach(el => el.removeAttribute('style'));

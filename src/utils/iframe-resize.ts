@@ -1,7 +1,7 @@
 import browser from './browser-polyfill';
 import { throttle } from './throttle';
 
-const IFRAME_ID = 'obsidian-clipper-iframe';
+const IFRAME_ID = 'tolaria-clipper-iframe';
 const MIN_SIZE = 200;
 
 let sidebarWidthRaf: number | null = null;

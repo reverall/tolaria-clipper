@@ -321,7 +321,7 @@ export function addPropertyToEditor(name: string = '', value: string = '', id: s
 	const select = document.createElement('select');
 	select.className = 'property-type';
 	select.id = `${propertyId}-type`;
-	['text', 'multitext', 'number', 'checkbox', 'date', 'datetime'].forEach(optionValue => {
+	['text', 'multitext', 'relation', 'keyword', 'number', 'checkbox', 'date', 'datetime'].forEach(optionValue => {
 		const option = document.createElement('option');
 		option.value = optionValue;
 		const messageKey = `propertyType${optionValue.charAt(0).toUpperCase() + optionValue.slice(1)}`;

@@ -6,6 +6,8 @@ import { debounce } from './utils/debounce';
 import { Settings } from './types/types';
 import { debugLog } from './utils/debug';
 import { incrementStat } from './utils/storage-utils';
+import { NativeHostError, sendToHost } from './utils/native-host-client';
+import { HostOpMap, makeError } from './native-host/protocol';
 
 const YOUTUBE_EMBED_RULE_ID = 9001;
 const YOUTUBE_INNERTUBE_RULE_ID = 9002;
@@ -692,50 +694,31 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 			return true;
 		}
 
-		if (typedRequest.action === "openObsidianUrl") {
-			const url = (typedRequest as any).url;
-			if (url) {
-				browser.tabs.query({active: true, currentWindow: true}).then((tabs) => {
-					const currentTab = tabs[0];
-					if (currentTab && currentTab.id) {
-						browser.tabs.update(currentTab.id, { url: url }).then(() => {
-							sendResponse({ success: true });
-						}).catch((error) => {
-							console.error('Error opening Obsidian URL:', error);
-							sendResponse({
-								success: false,
-								error: error instanceof Error ? error.message : String(error)
-							});
-						});
-					} else {
-						sendResponse({
-							success: false,
-							error: 'No active tab found'
-						});
-					}
-				}).catch((error) => {
-					console.error('Error querying tabs:', error);
-					sendResponse({
-						success: false,
-						error: error instanceof Error ? error.message : String(error)
-					});
+		// Single funnel to the native host. sendNativeMessage is only reliable
+		// from the background script, so popup, side panel and settings all
+		// route through here.
+		//
+		// Note what is absent: nothing navigates a tab to an app URL. That
+		// navigation is what used to bring Obsidian to the front on every clip.
+		if (typedRequest.action === "nativeHostCall") {
+			const { op, params } = typedRequest as unknown as { op: keyof HostOpMap; params: unknown };
+			sendToHost(op, params as never)
+				.then((result) => sendResponse({ ok: true, result }))
+				.catch((error) => {
+					const hostError = error instanceof NativeHostError
+						? error.hostError
+						: makeError('E_INTERNAL', error instanceof Error ? error.message : String(error));
+					console.error('[Tolaria Clipper] Native host call failed:', op, hostError);
+					sendResponse({ ok: false, error: hostError });
 				});
-				return true;
-			} else {
-				sendResponse({
-					success: false,
-					error: 'Missing URL'
-				});
-				return true;
-			}
+			return true;
 		}
 
 		// For other actions that use sendResponse
 		if (typedRequest.action === "extractContent" ||
 			typedRequest.action === "ensureContentScriptLoaded" ||
 			typedRequest.action === "getHighlighterMode" ||
-			typedRequest.action === "toggleHighlighterMode" ||
-			typedRequest.action === "openObsidianUrl") {
+			typedRequest.action === "toggleHighlighterMode") {
 			return true;
 		}
 	}

@@ -10,12 +10,12 @@
 	}
 }
 @media (max-width: 500px) {
-	#obsidian-clipper-container {
+	#tolaria-clipper-container {
 		width: 100%;
 	}
 }
 
-#obsidian-clipper-iframe {
+#tolaria-clipper-iframe {
 	color-scheme: light dark;
 	flex-grow: 1;
 	border: none !important;
@@ -28,7 +28,7 @@
 	}
 }
 
-#obsidian-clipper-container {
+#tolaria-clipper-container {
 	--obsidian-clipper-background-primary: #fff;
 	--obsidian-clipper-background-primary-rgb: 255, 255, 255;
 	--obsidian-clipper-background-opacity: 0.97;
@@ -71,7 +71,7 @@
 
 	&.is-open {
 		animation: 80ms ease 60ms 1 normal forwards running clipperOpenAnimation;
-		#obsidian-clipper-iframe {
+		#tolaria-clipper-iframe {
 			opacity: 1;
 		}
 	}

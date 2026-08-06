@@ -1,145 +1,82 @@
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-import { sanitizeFileName } from './string-utils';
+// CLI-side vault writing.
+//
+// Shares fs-ops with the native host, so the CLI and the extension cannot drift
+// on dedupe naming, frontmatter-aware prepend, or path containment.
+
 import { Template } from '../types/types';
+import { saveNote } from '../native-host/fs-ops';
+import { findVault, loadVaults } from '../native-host/vaults';
+import { behaviorToSaveMode } from './clip-behavior';
+import { sanitizeFileName } from './string-utils';
 
-const execFileAsync = promisify(execFile);
-
-/**
- * Check if the `obsidian` CLI is available on PATH.
- */
-async function hasObsidianCli(): Promise<boolean> {
-	try {
-		await execFileAsync('obsidian', ['version']);
-		return true;
-	} catch {
-		return false;
-	}
+export interface SaveToVaultOptions {
+	fileContent: string;
+	noteName: string;
+	path: string;
+	/** Vault id, slug, label or absolute path. Empty means the active vault. */
+	vault: string;
+	behavior: Template['behavior'];
+	/** Folder holding daily notes, for the -daily behaviours. */
+	dailyNotePath?: string;
+	dailyNoteFormat?: string;
 }
 
-/**
- * Create/append/prepend a note via the Obsidian CLI.
- */
-async function openViaObsidianCli(
-	fileContent: string,
-	noteName: string,
-	path: string,
-	vault: string,
-	behavior: Template['behavior'],
-	silent: boolean
-): Promise<string> {
-	const isDailyNote = behavior === 'append-daily' || behavior === 'prepend-daily';
-	const vaultArgs = vault ? [`vault=${vault}`] : [];
-
-	if (isDailyNote) {
-		const command = behavior === 'append-daily' ? 'daily:append' : 'daily:prepend';
-		const { stdout } = await execFileAsync('obsidian', [
-			command,
-			`content=${fileContent}`,
-			...vaultArgs,
-		]);
-		return stdout.trim();
-	}
-
-	const normalizedPath = path && !path.endsWith('/') ? path + '/' : path;
-	const formattedNoteName = sanitizeFileName(noteName);
-	const filePath = normalizedPath + formattedNoteName + '.md';
-
-	if (behavior === 'append-specific' || behavior === 'prepend-specific') {
-		const command = behavior === 'append-specific' ? 'append' : 'prepend';
-		const { stdout } = await execFileAsync('obsidian', [
-			command,
-			`path=${filePath}`,
-			`content=${fileContent}`,
-			...vaultArgs,
-		]);
-		return stdout.trim();
-	}
-
-	// create or overwrite
-	const args = [
-		'create',
-		`path=${filePath}`,
-		`content=${fileContent}`,
-		'open',
-		...vaultArgs,
-	];
-	if (behavior === 'overwrite') {
-		args.push('overwrite');
-	}
-
-	const { stdout } = await execFileAsync('obsidian', args);
-	return stdout.trim();
+export interface SaveToVaultResult {
+	message: string;
+	absolutePath: string;
+	relativePath: string;
+	deepLink: string;
 }
 
-/**
- * Open a note in Obsidian via URI scheme (fallback / legacy mode).
- */
-async function openViaUri(
-	fileContent: string,
-	noteName: string,
-	path: string,
-	vault: string,
-	behavior: Template['behavior'],
-	silent: boolean
-): Promise<void> {
-	const isDailyNote = behavior === 'append-daily' || behavior === 'prepend-daily';
-
-	let obsidianUrl: string;
-	if (isDailyNote) {
-		obsidianUrl = `obsidian://daily?`;
-	} else {
-		const normalizedPath = path && !path.endsWith('/') ? path + '/' : path;
-		const formattedNoteName = sanitizeFileName(noteName);
-		obsidianUrl = `obsidian://new?file=${encodeURIComponent(normalizedPath + formattedNoteName)}`;
-	}
-
-	if (behavior.startsWith('append')) {
-		obsidianUrl += '&append=true';
-	} else if (behavior.startsWith('prepend')) {
-		obsidianUrl += '&prepend=true';
-	} else if (behavior === 'overwrite') {
-		obsidianUrl += '&overwrite=true';
-	}
-
-	if (vault) {
-		obsidianUrl += `&vault=${encodeURIComponent(vault)}`;
-	}
-
-	if (silent) {
-		obsidianUrl += '&silent=true';
-	}
-
-	obsidianUrl += `&content=${encodeURIComponent(fileContent)}`;
-
-	const platform = process.platform;
-	if (platform === 'darwin') {
-		await execFileAsync('open', [obsidianUrl]);
-	} else if (platform === 'win32') {
-		await execFileAsync('powershell', ['-Command', 'Start-Process', '-Uri', obsidianUrl]);
-	} else {
-		await execFileAsync('xdg-open', [obsidianUrl]);
-	}
+function todayFormatted(format: string): string {
+	// Deliberately dependency-free: dayjs is not bundled into the CLI's node
+	// build, and the default format is plain ISO.
+	const now = new Date();
+	const pad = (n: number) => String(n).padStart(2, '0');
+	return format
+		.replace(/YYYY/g, String(now.getFullYear()))
+		.replace(/MM/g, pad(now.getMonth() + 1))
+		.replace(/DD/g, pad(now.getDate()));
 }
 
-/**
- * Send a note to Obsidian. Uses the Obsidian CLI by default,
- * falls back to URI scheme if --uri is set or CLI is not available.
- */
-export async function openInObsidian(
-	fileContent: string,
-	noteName: string,
-	path: string,
-	vault: string,
-	behavior: Template['behavior'],
-	silent: boolean,
-	forceUri: boolean
-): Promise<string> {
-	if (!forceUri && await hasObsidianCli()) {
-		const result = await openViaObsidianCli(fileContent, noteName, path, vault, behavior, silent);
-		return result;
+export async function saveToVault(options: SaveToVaultOptions): Promise<SaveToVaultResult> {
+	const { vaults } = loadVaults();
+	if (vaults.length === 0) {
+		throw new Error('No Tolaria vaults found. Open a vault in Tolaria first.');
 	}
 
-	await openViaUri(fileContent, noteName, path, vault, behavior, silent);
-	return `Opened in Obsidian${vault ? ` (vault: ${vault})` : ''}`;
+	const vault = findVault(vaults, options.vault);
+	if (!vault) {
+		throw new Error(`Unknown vault: ${options.vault}`);
+	}
+	if (!vault.exists) {
+		throw new Error(`Vault folder is unavailable: ${vault.path}`);
+	}
+
+	const isDaily = options.behavior === 'append-daily' || options.behavior === 'prepend-daily';
+	const name = isDaily
+		? todayFormatted(options.dailyNoteFormat || 'YYYY-MM-DD')
+		: sanitizeFileName(options.noteName, process.platform) || 'untitled';
+	const folder = isDaily ? (options.dailyNotePath ?? '') : options.path;
+
+	const result = saveNote(
+		vault.path,
+		folder.replace(/^[\\/]+|[\\/]+$/g, ''),
+		name,
+		options.fileContent,
+		behaviorToSaveMode(options.behavior)
+	);
+
+	const deepLink = `tolaria://${vault.slug}/${result.relativePath
+		.split(/[\\/]/)
+		.filter(Boolean)
+		.map(encodeURIComponent)
+		.join('/')}`;
+
+	return {
+		message: `${result.created ? 'Created' : 'Updated'} ${result.relativePath} in ${vault.label}`,
+		absolutePath: result.absolutePath,
+		relativePath: result.relativePath,
+		deepLink,
+	};
 }

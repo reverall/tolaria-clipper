@@ -151,7 +151,16 @@
 		"message": "Custom"
 	},
 	"dailyNoteFormat": {
-		"message": "Daily note format (e.g., YYYY-MM-DD)"
+		"message": "Daily note format"
+	},
+	"dailyNoteFormatDescription": {
+		"message": "Filename format for daily notes, for example YYYY-MM-DD."
+	},
+	"dailyNotePath": {
+		"message": "Daily notes folder"
+	},
+	"dailyNotePathDescription": {
+		"message": "Where templates that add to the daily note should write. Leave empty for the vault root."
 	},
 	"defaultInterpreterContext": {
 		"message": "Default interpreter context"
@@ -395,6 +404,71 @@
 	"history": {
 		"message": "History"
 	},
+	"hostBadRequest": {
+		"message": "The Tolaria helper rejected the request."
+	},
+	"hostChecking": {
+		"message": "Checking…"
+	},
+	"hostConnected": {
+		"message": "Helper connected"
+	},
+	"hostNoVaults": {
+		"message": "No Tolaria vaults found. Open a vault in Tolaria first."
+	},
+	"hostNotInstalled": {
+		"message": "Helper not installed"
+	},
+	"hostNotInstalledDescription": {
+		"message": "Install the helper so clips can be written into your vault. Run this in a terminal, then check again:"
+	},
+	"hostNoteExists": {
+		"message": "A note with that name already exists."
+	},
+	"hostNoteNotFound": {
+		"message": "The target note could not be found."
+	},
+	"hostPathEscape": {
+		"message": "That note location is not allowed."
+	},
+	"hostPermissionDenied": {
+		"message": "Permission denied when writing to your vault."
+	},
+	"hostRecheck": {
+		"message": "Connection status"
+	},
+	"hostRecheckButton": {
+		"message": "Check again"
+	},
+	"hostRecheckDescription": {
+		"message": "Run a diagnostic against the helper, your browsers and your vaults."
+	},
+	"hostTimeout": {
+		"message": "The Tolaria helper did not respond in time."
+	},
+	"hostTooLarge": {
+		"message": "The response from the Tolaria helper was too large."
+	},
+	"hostVaultCount": {
+		"message": "$1 vault(s) found",
+		"placeholders": {
+			"1": {
+				"content": "$1"
+			}
+		}
+	},
+	"hostVaultNotFound": {
+		"message": "That vault is not registered in Tolaria."
+	},
+	"hostVaultUnmounted": {
+		"message": "The vault folder is unavailable. Is the drive connected?"
+	},
+	"hostVersionMismatch": {
+		"message": "The Tolaria helper is out of date. Reinstall it with npx tolaria-clipper install-host."
+	},
+	"hostWriteFailed": {
+		"message": "Could not write the note to your vault."
+	},
 	"hotkeys": {
 		"message": "Hotkeys"
 	},
@@ -477,12 +551,6 @@
 	"lastUsed": {
 		"message": "Last used"
 	},
-	"legacyMode": {
-		"message": "Legacy mode"
-	},
-	"legacyModeDescription": {
-		"message": "Uses the URI clipping method compatible with Obsidian 1.6.7 or earlier. Note that the length of the content you can clip is limited by your browser and OS. Some pages may fail without any errors."
-	},
 	"loadArticle": {
 		"message": "Read article"
 	},
@@ -563,11 +631,23 @@
 	"notesAboutPage": {
 		"message": "Notes about this page..."
 	},
+	"notifyTolariaBridge": {
+		"message": "Notify Tolaria after saving"
+	},
+	"notifyTolariaBridgeDescription": {
+		"message": "Usually unnecessary — Tolaria watches your vault folder and picks up new notes on its own. Enable only if clips do not appear until you reload the vault."
+	},
 	"onlyHttpSupported": {
 		"message": "This page cannot be clipped. Only http and https URLs are supported."
 	},
 	"open": {
 		"message": "Open"
+	},
+	"openAfterSave": {
+		"message": "Open the note in Tolaria after clipping"
+	},
+	"openAfterSaveDescription": {
+		"message": "Off by default. Clipped notes are written straight into your vault and picked up by Tolaria automatically, without bringing the app to the foreground."
 	},
 	"openBehaviorDescription": {
 		"message": "Choose how Web Clipper opens by default."
@@ -659,11 +739,17 @@
 	"propertyTypeDatetime": {
 		"message": "Date & time"
 	},
+	"propertyTypeKeyword": {
+		"message": "Keyword"
+	},
 	"propertyTypeMultitext": {
 		"message": "List"
 	},
 	"propertyTypeNumber": {
 		"message": "Number"
+	},
+	"propertyTypeRelation": {
+		"message": "Relation"
 	},
 	"propertyTypeText": {
 		"message": "Text"
@@ -920,11 +1006,11 @@
 	"saveBehaviorLabel": {
 		"message": "Save behavior"
 	},
-	"saved": {
-		"message": "Saved"
-	},
 	"saveFile": {
 		"message": "Save file..."
+	},
+	"saved": {
+		"message": "Saved"
 	},
 	"searchHighlightsPlaceholder": {
 		"message": "Search highlights…"
@@ -982,12 +1068,6 @@
 	},
 	"showPageVariables": {
 		"message": "Show page variables"
-	},
-	"silentOpen": {
-		"message": "Save clipped note without opening it"
-	},
-	"silentOpenDescription": {
-		"message": "Clipped notes will be saved but will not open as a new tab. Obsidian will still be brought to the foreground."
 	},
 	"sort": {
 		"message": "Sort"
@@ -1055,6 +1135,12 @@
 	"thinking": {
 		"message": "thinking"
 	},
+	"tolariaConnection": {
+		"message": "Tolaria connection"
+	},
+	"tolariaConnectionDescription": {
+		"message": "Web Clipper writes notes straight into your vault folder through a small helper, so clipping never brings Tolaria to the foreground."
+	},
 	"unknownProvider": {
 		"message": "Unknown provider"
 	},
@@ -1082,15 +1168,7 @@
 		"message": "Vaults"
 	},
 	"vaultsDescription": {
-		"message": "By default, clipped notes are saved to the currently open vault. You can add vaults here if you want the option to save to different vaults. Vault names must exactly match the name of the Obsidian vault. Press $strong_start$enter$strong_end$ to add a vault.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
+		"message": "Vaults are discovered automatically from Tolaria. Drag to reorder how they appear in the clipper. Add one manually only if it is missing from the list."
 	},
 	"version": {
 		"message": "Version"

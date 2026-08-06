@@ -382,6 +382,104 @@ describe('generateFrontmatter', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Tolaria property types
+// ---------------------------------------------------------------------------
+
+describe('generateFrontmatter — relation type', () => {
+	test('emits a bare key when empty, so is_empty views still match', () => {
+		const result = generateFrontmatter(
+			[{ name: 'belongs_to', value: '' }],
+			{ belongs_to: 'relation' }
+		);
+		expect(result).toContain('belongs_to:\n');
+		expect(result).not.toContain('belongs_to: ""');
+	});
+
+	test('emits a quoted scalar for a single target', () => {
+		const result = generateFrontmatter(
+			[{ name: 'belongs_to', value: 'Mamie' }],
+			{ belongs_to: 'relation' }
+		);
+		expect(result).toContain('belongs_to: "[[Mamie]]"');
+	});
+
+	test('emits a YAML list for several targets', () => {
+		const result = generateFrontmatter(
+			[{ name: 'related_to', value: 'AI, Future stack' }],
+			{ related_to: 'relation' }
+		);
+		expect(result).toContain('related_to:\n  - "[[AI]]"\n  - "[[Future stack]]"\n');
+	});
+
+	test('does not double-wrap values that already carry brackets', () => {
+		const result = generateFrontmatter(
+			[{ name: 'related_to', value: '[[AI]],[[Figma]]' }],
+			{ related_to: 'relation' }
+		);
+		expect(result).toContain('  - "[[AI]]"\n  - "[[Figma]]"\n');
+		expect(result).not.toContain('[[[[');
+	});
+
+	test('does not split inside a wikilink containing a comma', () => {
+		const result = generateFrontmatter(
+			[{ name: 'related_to', value: '[[Smith, John]], [[Figma]]' }],
+			{ related_to: 'relation' }
+		);
+		expect(result).toContain('  - "[[Smith, John]]"\n  - "[[Figma]]"\n');
+	});
+
+	test('preserves display-text aliases', () => {
+		const result = generateFrontmatter(
+			[{ name: 'belongs_to', value: '[[project-alpha|Project Alpha]]' }],
+			{ belongs_to: 'relation' }
+		);
+		expect(result).toContain('belongs_to: "[[project-alpha|Project Alpha]]"');
+	});
+
+	test('strips a .md extension so the link resolves', () => {
+		const result = generateFrontmatter(
+			[{ name: 'belongs_to', value: 'my-note.md' }],
+			{ belongs_to: 'relation' }
+		);
+		expect(result).toContain('belongs_to: "[[my-note]]"');
+	});
+});
+
+describe('generateFrontmatter — keyword type', () => {
+	test('writes a safe token unquoted', () => {
+		const result = generateFrontmatter(
+			[{ name: 'type', value: 'Clippings' }],
+			{ type: 'keyword' }
+		);
+		expect(result).toContain('type: Clippings\n');
+	});
+
+	test('quotes values that are not safe YAML tokens', () => {
+		const result = generateFrontmatter(
+			[{ name: 'status', value: 'In progress' }],
+			{ status: 'keyword' }
+		);
+		expect(result).toContain('status: "In progress"');
+	});
+
+	test('quotes YAML booleans so they stay strings', () => {
+		const result = generateFrontmatter(
+			[{ name: 'status', value: 'no' }],
+			{ status: 'keyword' }
+		);
+		expect(result).toContain('status: "no"');
+	});
+
+	test('emits a bare key when empty', () => {
+		const result = generateFrontmatter(
+			[{ name: 'status', value: '' }],
+			{ status: 'keyword' }
+		);
+		expect(result).toContain('status:\n');
+	});
+});
+
+// ---------------------------------------------------------------------------
 // extractContentBySelector
 // ---------------------------------------------------------------------------
 

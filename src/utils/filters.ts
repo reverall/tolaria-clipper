@@ -17,6 +17,7 @@ import { html_to_json } from './filters/html_to_json';
 import { image } from './filters/image';
 import { join } from './filters/join';
 import { kebab } from './filters/kebab';
+import { kebab_slug } from './filters/kebab_slug';
 import { last } from './filters/last';
 import { list, validateListParams } from './filters/list';
 import { link } from './filters/link';
@@ -41,6 +42,7 @@ import { slice, validateSliceParams } from './filters/slice';
 import { snake } from './filters/snake';
 import { split } from './filters/split';
 import { strip_attr } from './filters/strip_attr';
+import { strip_h1 } from './filters/strip_h1';
 import { strip_md } from './filters/strip_md';
 import { strip_tags } from './filters/strip_tags';
 import { table } from './filters/table';
@@ -94,6 +96,7 @@ export const filterMetadata: Record<string, FilterMetadata> = {
 	image: {},
 	join: { example: 'join:", "' },
 	kebab: {},
+	kebab_slug: {},
 	last: {},
 	length: {},
 	link: {},
@@ -115,6 +118,7 @@ export const filterMetadata: Record<string, FilterMetadata> = {
 	snake: {},
 	split: { example: 'split:","' },
 	strip_attr: {},
+	strip_h1: {},
 	strip_md: {},
 	strip_tags: {},
 	stripmd: {},
@@ -147,6 +151,7 @@ export const filters: { [key: string]: FilterFunction } = {
 	image,
 	join,
 	kebab,
+	kebab_slug,
 	last,
 	length,
 	link,
@@ -171,6 +176,7 @@ export const filters: { [key: string]: FilterFunction } = {
 	snake,
 	split,
 	strip_attr,
+	strip_h1,
 	strip_md,
 	strip_tags,
 	stripmd: strip_md, // an alias for strip_md

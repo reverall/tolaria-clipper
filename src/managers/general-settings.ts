@@ -18,6 +18,8 @@ import { getClipHistory } from '../utils/storage-utils';
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { showModal, hideModal } from '../utils/modal-utils';
+import { callHost, getHostStatus } from '../utils/native-host-client';
+import { formatDoctor } from '../native-host/doctor-format';
 
 dayjs.extend(weekOfYear);
 
@@ -214,8 +216,10 @@ export function initializeGeneralSettings(): void {
 		updateVaultList();
 		initializeShowMoreActionsToggle();
 		initializeBetaFeaturesToggle();
-		initializeLegacyModeToggle();
-		initializeSilentOpenToggle();
+		initializeOpenAfterSaveToggle();
+		initializeNotifyBridgeToggle();
+		initializeDailyNoteFields();
+		initializeHostConnection();
 		initializeVaultInput();
 		initializeOpenBehaviorDropdown();
 		initializeKeyboardShortcuts();
@@ -251,8 +255,8 @@ function saveSettingsFromForm(): void {
 	const openBehaviorDropdown = document.getElementById('open-behavior-dropdown') as HTMLSelectElement;
 	const showMoreActionsToggle = document.getElementById('show-more-actions-toggle') as HTMLInputElement;
 	const betaFeaturesToggle = document.getElementById('beta-features-toggle') as HTMLInputElement;
-	const legacyModeToggle = document.getElementById('legacy-mode-toggle') as HTMLInputElement;
-	const silentOpenToggle = document.getElementById('silent-open-toggle') as HTMLInputElement;
+	const openAfterSaveToggle = document.getElementById('open-after-save-toggle') as HTMLInputElement;
+	const notifyBridgeToggle = document.getElementById('notify-bridge-toggle') as HTMLInputElement;
 	const highlighterToggle = document.getElementById('highlighter-toggle') as HTMLInputElement;
 	const alwaysShowHighlightsToggle = document.getElementById('highlighter-visibility') as HTMLInputElement;
 	const highlightBehaviorSelect = document.getElementById('highlighter-behavior') as HTMLSelectElement;
@@ -262,8 +266,8 @@ function saveSettingsFromForm(): void {
 		openBehavior: (openBehaviorDropdown?.value as Settings['openBehavior']) ?? generalSettings.openBehavior,
 		showMoreActionsButton: showMoreActionsToggle?.checked ?? generalSettings.showMoreActionsButton,
 		betaFeatures: betaFeaturesToggle?.checked ?? generalSettings.betaFeatures,
-		legacyMode: legacyModeToggle?.checked ?? generalSettings.legacyMode,
-		silentOpen: silentOpenToggle?.checked ?? generalSettings.silentOpen,
+		openAfterSave: openAfterSaveToggle?.checked ?? generalSettings.openAfterSave,
+		notifyTolariaBridge: notifyBridgeToggle?.checked ?? generalSettings.notifyTolariaBridge,
 		highlighterEnabled: highlighterToggle?.checked ?? generalSettings.highlighterEnabled,
 		alwaysShowHighlights: alwaysShowHighlightsToggle?.checked ?? generalSettings.alwaysShowHighlights,
 		highlightBehavior: highlightBehaviorSelect?.value ?? generalSettings.highlightBehavior
@@ -276,6 +280,87 @@ function initializeShowMoreActionsToggle(): void {
 	initializeSettingToggle('show-more-actions-toggle', generalSettings.showMoreActionsButton, (checked) => {
 		saveSettings({ ...generalSettings, showMoreActionsButton: checked });
 	});
+}
+
+/**
+ * Show whether the helper is reachable, and give a one-click diagnostic.
+ * Without it there is no way to write into a vault, so this is the first thing
+ * to check when clipping fails.
+ */
+async function refreshHostStatus(forceRefresh = false): Promise<void> {
+	const statusEl = document.getElementById('host-status');
+	if (!statusEl) return;
+
+	statusEl.textContent = getMessage('hostChecking');
+
+	const status = await getHostStatus(forceRefresh);
+	statusEl.textContent = '';
+
+	const badge = createElementWithClass('span', status.installed ? 'host-status-ok' : 'host-status-error');
+	badge.textContent = status.installed
+		? getMessage('hostConnected')
+		: getMessage('hostNotInstalled');
+	statusEl.appendChild(badge);
+
+	if (status.installed && status.info) {
+		const detail = document.createElement('div');
+		detail.textContent = getMessage('hostVaultCount', String(status.info.vaultCount));
+		statusEl.appendChild(detail);
+		return;
+	}
+
+	const help = document.createElement('div');
+	help.textContent = getMessage('hostNotInstalledDescription');
+	statusEl.appendChild(help);
+
+	const command = createElementWithClass('code', 'host-setup-banner-command');
+	command.textContent = 'npx tolaria-clipper install-host';
+	command.addEventListener('click', () => {
+		navigator.clipboard.writeText(command.textContent || '').catch(() => { /* clipboard may be blocked */ });
+	});
+	statusEl.appendChild(command);
+}
+
+function initializeHostConnection(): void {
+	const recheckBtn = document.getElementById('host-recheck-btn');
+	const output = document.getElementById('host-doctor-output') as HTMLPreElement | null;
+
+	refreshHostStatus();
+
+	recheckBtn?.addEventListener('click', async () => {
+		await refreshHostStatus(true);
+		if (!output) return;
+
+		try {
+			const report = await callHost('doctor', {});
+			output.textContent = formatDoctor(report);
+			output.style.display = 'block';
+		} catch {
+			// The status line already explains the failure; a stack trace here
+			// would only add noise.
+			output.style.display = 'none';
+		}
+	});
+}
+
+function initializeDailyNoteFields(): void {
+	const pathField = document.getElementById('daily-note-path') as HTMLInputElement;
+	const formatField = document.getElementById('daily-note-format') as HTMLInputElement;
+
+	if (pathField) {
+		pathField.value = generalSettings.dailyNotePath;
+		pathField.addEventListener('change', () => {
+			saveSettings({ ...generalSettings, dailyNotePath: pathField.value.trim() });
+		});
+	}
+
+	if (formatField) {
+		formatField.value = generalSettings.dailyNoteFormat;
+		formatField.addEventListener('change', () => {
+			// An empty format would produce a nameless file; fall back instead.
+			saveSettings({ ...generalSettings, dailyNoteFormat: formatField.value.trim() || 'YYYY-MM-DD' });
+		});
+	}
 }
 
 function initializeVaultInput(): void {
@@ -332,15 +417,19 @@ function initializeBetaFeaturesToggle(): void {
 	});
 }
 
-function initializeLegacyModeToggle(): void {
-	initializeSettingToggle('legacy-mode-toggle', generalSettings.legacyMode, (checked) => {
-		saveSettings({ ...generalSettings, legacyMode: checked });
+// Off by default: this is the only setting that lets a clip bring Tolaria to
+// the front, which is exactly what the port set out to stop doing implicitly.
+function initializeOpenAfterSaveToggle(): void {
+	initializeSettingToggle('open-after-save-toggle', generalSettings.openAfterSave, (checked) => {
+		saveSettings({ ...generalSettings, openAfterSave: checked });
 	});
 }
 
-function initializeSilentOpenToggle(): void {
-	initializeSettingToggle('silent-open-toggle', generalSettings.silentOpen, (checked) => {
-		saveSettings({ ...generalSettings, silentOpen: checked });
+// Redundant with Tolaria's file watcher; useful only when fsevents coalesces
+// events on a synced volume.
+function initializeNotifyBridgeToggle(): void {
+	initializeSettingToggle('notify-bridge-toggle', generalSettings.notifyTolariaBridge, (checked) => {
+		saveSettings({ ...generalSettings, notifyTolariaBridge: checked });
 	});
 }
 

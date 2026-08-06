@@ -87,6 +87,8 @@ export function getPropertyTypeIcon(type: string): string {
 	const iconMap: { [key: string]: string } = {
 		text: 'align-left',
 		multitext: 'list',
+		relation: 'link',
+		keyword: 'tag',
 		number: 'binary',
 		checkbox: 'square-check-big',
 		date: 'calendar',

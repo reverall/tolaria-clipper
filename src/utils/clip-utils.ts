@@ -1,5 +1,6 @@
 import Defuddle from 'defuddle/full';
 import { setElementHTML } from './dom-utils';
+import { stripInjectedUi } from './clipper-dom';
 
 // Parse document content for clipping. In reader mode, extracts from
 // the article's original HTML to avoid reader UI artifacts.
@@ -15,7 +16,16 @@ export function parseForClip(doc: Document) {
 				...Array.from(readerArticle.childNodes).map(n => readerDoc.importNode(n, true))
 			);
 		}
-		return new Defuddle(readerDoc, { url: '' }).parse();
+		return cleanResult(new Defuddle(readerDoc, { url: '' }).parse());
 	}
-	return new Defuddle(doc, { url: doc.URL }).parse();
+	return cleanResult(new Defuddle(doc, { url: doc.URL }).parse());
+}
+
+/**
+ * Defuddle reads the live document, which contains the clipper's own side
+ * panel. Strip it from the extracted content before anything downstream sees
+ * it.
+ */
+function cleanResult<T extends { content: string }>(result: T): T {
+	return { ...result, content: stripInjectedUi(result.content) };
 }

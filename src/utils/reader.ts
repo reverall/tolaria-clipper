@@ -1407,7 +1407,7 @@ export class Reader {
 			// Replace body with a clone to remove all event listeners.
 			// Skip when the clipper iframe is present — cloning creates a
 			// new iframe element which reloads and loses user edits.
-			if (!doc.getElementById('obsidian-clipper-container')) {
+			if (!doc.getElementById('tolaria-clipper-container')) {
 				const newBody = doc.body.cloneNode(true);
 				doc.body.parentNode?.replaceChild(newBody, doc.body);
 			}
@@ -1989,7 +1989,7 @@ export class Reader {
 			this.hasApplied = true;
 
 			// Clipper iframe container
-			const clipperIframeContainer = doc.getElementById('obsidian-clipper-container');
+			const clipperIframeContainer = doc.getElementById('tolaria-clipper-container');
 
 			// Load saved settings
 			await this.loadSettings();
@@ -2030,7 +2030,7 @@ export class Reader {
 			// Clone document and start Defuddle before the view transition
 			// so content extraction runs during the crossfade animation
 			const docClone = doc.cloneNode(true) as Document;
-			docClone.getElementById('obsidian-clipper-container')?.remove();
+			docClone.getElementById('tolaria-clipper-container')?.remove();
 			Object.defineProperty(docClone, 'URL', { value: doc.URL, configurable: true });
 			const contentPromise = this.extractContent(docClone);
 
@@ -2730,8 +2730,8 @@ export class Reader {
 	// --- Reader page helpers (extension page context) ---
 
 	static async toggleReaderPageIframe(doc: Document): Promise<void> {
-		const containerId = 'obsidian-clipper-container';
-		const iframeId = 'obsidian-clipper-iframe';
+		const containerId = 'tolaria-clipper-container';
+		const iframeId = 'tolaria-clipper-iframe';
 
 		const existing = doc.getElementById(containerId);
 		if (existing) {

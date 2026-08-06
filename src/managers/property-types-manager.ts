@@ -10,19 +10,41 @@ import { saveFile } from '../utils/file-utils';
 import { getMessage } from '../utils/i18n';
 
 export function initializePropertyTypesManager(): void {
-	ensureTagsProperty();
+	ensureCoreTolariaProperties();
 	updatePropertyTypesList();
 	setupAddPropertyTypeButton();
 	setupImportExportButtons();
 	setupDeleteUnusedPropertiesButton();
 }
 
-function ensureTagsProperty(): void {
-	const tagsProperty = generalSettings.propertyTypes.find(pt => pt.name === 'tags');
-	if (!tagsProperty) {
-		addPropertyType('tags', 'multitext', '');
-	} else if (tagsProperty.type !== 'multitext') {
-		updatePropertyType('tags', 'multitext', tagsProperty.defaultValue || '');
+/**
+ * Seed the property types Tolaria treats specially, so a fresh install writes
+ * correct YAML before any template has been edited.
+ *
+ * `belongs_to`, `has` and `related_to` are Tolaria's built-in relationships,
+ * with automatically computed inverses; typing them as `relation` is what
+ * produces quoted wikilinks instead of plain strings.
+ */
+const CORE_TOLARIA_PROPERTIES: Array<{ name: string; type: string }> = [
+	{ name: 'type', type: 'keyword' },
+	{ name: 'status', type: 'keyword' },
+	{ name: 'url', type: 'text' },
+	{ name: 'date', type: 'date' },
+	{ name: 'published', type: 'date' },
+	{ name: 'created', type: 'date' },
+	{ name: 'belongs_to', type: 'relation' },
+	{ name: 'has', type: 'relation' },
+	{ name: 'related_to', type: 'relation' },
+];
+
+function ensureCoreTolariaProperties(): void {
+	for (const { name, type } of CORE_TOLARIA_PROPERTIES) {
+		const existing = generalSettings.propertyTypes.find(pt => pt.name === name);
+		if (!existing) {
+			addPropertyType(name, type, '');
+		}
+		// An existing entry is left alone: the user may have retyped it
+		// deliberately, and silently overriding that would be surprising.
 	}
 }
 
@@ -90,7 +112,7 @@ function createPropertyTypeListItem(propertyType: PropertyType, usageCount: numb
 
 	const select = document.createElement('select') as HTMLSelectElement;
 	select.className = 'property-type';
-	['text', 'multitext', 'number', 'checkbox', 'date', 'datetime'].forEach(type => {
+	['text', 'multitext', 'relation', 'keyword', 'number', 'checkbox', 'date', 'datetime'].forEach(type => {
 		const option = document.createElement('option');
 		option.value = type;
 		const messageKey = `propertyType${type.charAt(0).toUpperCase() + type.slice(1)}`;

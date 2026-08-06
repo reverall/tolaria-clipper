@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import { Template, Property, PromptVariable } from '../types/types';
 import { incrementStat, addHistoryEntry, getClipHistory } from '../utils/storage-utils';
-import { generateFrontmatter, saveToObsidian } from '../utils/obsidian-note-creator';
+import { generateFrontmatter, isDailyBehavior, saveToTolaria } from '../utils/tolaria-note-creator';
+import { NativeHostError, getHostStatus, invalidateHostStatus } from '../utils/native-host-client';
 import { extractPageContent, initializePageContent } from '../utils/content-extractor';
 import { compileTemplate } from '../utils/template-compiler';
 import { initializeIcons, getPropertyTypeIcon } from '../icons/icons';
@@ -245,10 +246,10 @@ function setupStorageListeners() {
 function setupMessageListeners() {
 	browser.runtime.onMessage.addListener((request: any, sender: browser.Runtime.MessageSender, sendResponse: (response?: any) => void) => {
 		if (request.action === "triggerQuickClip") {
-			handleClipObsidian().then(() => {
+			handleClipTolaria().then(() => {
 				sendResponse({success: true});
 			}).catch((error) => {
-				console.error('Error in handleClipObsidian:', error);
+				console.error('Error in handleClipTolaria:', error);
 				sendResponse({success: false, error: error.message});
 			});
 			return true;
@@ -382,7 +383,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 				setupEventListeners(currentTabId);
 				await initializeUI();
 
-				determineMainAction();
+				await determineMainAction();
 
 				const showMoreActionsButton = document.getElementById('show-variables');
 				if (showMoreActionsButton) {
@@ -1275,7 +1276,7 @@ async function handleSaveToDownloads() {
 	}
 }
 
-function determineMainAction() {
+async function determineMainAction() {
 	const mainButton = document.getElementById('clip-btn');
 	const moreDropdown = document.getElementById('more-dropdown');
 	const secondaryActions = moreDropdown?.querySelector('.secondary-actions');
@@ -1284,32 +1285,43 @@ function determineMainAction() {
 	// Clear existing secondary actions
 	secondaryActions.textContent = '';
 
+	// Without the native host there is no way to write into a vault, so fall
+	// back to a download rather than offering a button that cannot work.
+	const hostStatus = await getHostStatus();
+	if (!hostStatus.installed) {
+		mainButton.textContent = getMessage('saveFile');
+		mainButton.onclick = () => handleSaveToDownloads();
+		addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
+		showHostSetupBanner();
+		return;
+	}
+
 	// Set up actions based on saved behavior
 	switch (loadedSettings.saveBehavior) {
 		case 'copyToClipboard':
 			mainButton.textContent = getMessage('copyToClipboard');
 			mainButton.onclick = () => copyContent();
 			// Add direct actions to secondary
-			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipObsidian());
+			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipTolaria());
 			addSecondaryAction(secondaryActions, 'saveFile', handleSaveToDownloads);
 			break;
 		case 'saveFile':
 			mainButton.textContent = getMessage('saveFile');
 			mainButton.onclick = () => handleSaveToDownloads();
 			// Add direct actions to secondary
-			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipObsidian());
+			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipTolaria());
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
 			break;
 		default: // 'addToObsidian'
 			mainButton.textContent = getMessage('addToObsidian');
-			mainButton.onclick = () => handleClipObsidian();
+			mainButton.onclick = () => handleClipTolaria();
 			// Add direct actions to secondary
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
 			addSecondaryAction(secondaryActions, 'saveFile', handleSaveToDownloads);
 	}
 }
 
-async function handleClipObsidian(): Promise<void> {
+async function handleClipTolaria(): Promise<void> {
 	if (!currentTemplate) return;
 
 	const vaultDropdown = document.getElementById('vault-select') as HTMLSelectElement;
@@ -1318,7 +1330,7 @@ async function handleClipObsidian(): Promise<void> {
 	const pathField = document.getElementById('path-name-field') as HTMLInputElement;
 	const interpretBtn = document.getElementById('interpret-btn') as HTMLButtonElement;
 
-	if (!vaultDropdown || !noteContentField) {
+	if (!noteContentField) {
 		showError('Some required fields are missing. Please try reloading the extension.');
 		return;
 	}
@@ -1340,27 +1352,91 @@ async function handleClipObsidian(): Promise<void> {
 		const frontmatter = await generateFrontmatter(properties);
 		const fileContent = frontmatter + noteContentField.value;
 
-		// Save to Obsidian
-		const selectedVault = vaultDropdown.value || currentTemplate.vault || '';
-		const isDailyNote = currentTemplate.behavior === 'append-daily' || currentTemplate.behavior === 'prepend-daily';
-		const noteName = isDailyNote ? '' : noteNameField?.value || '';
-		const path = isDailyNote ? '' : pathField?.value || '';
+		const selectedVault = vaultDropdown?.value || currentTemplate.vault || '';
+		const isDaily = isDailyBehavior(currentTemplate.behavior);
+		const noteName = isDaily ? '' : noteNameField?.value || '';
+		const path = isDaily ? '' : pathField?.value || '';
 
-		await saveToObsidian(fileContent, noteName, path, selectedVault, currentTemplate.behavior);
+		// Awaited, not fire-and-forget: the popup used to close on a timer,
+		// which would hide any write failure.
+		const result = await saveToTolaria({
+			fileContent,
+			noteName,
+			path,
+			vault: selectedVault,
+			behavior: currentTemplate.behavior,
+		});
+
 		const tabInfo = await getCurrentTabInfo();
 		await incrementStat('addToObsidian', selectedVault, path, tabInfo.url, tabInfo.title);
 
 		lastSelectedVault = selectedVault;
 		await setLocalStorage('lastSelectedVault', lastSelectedVault);
 
+		debugLog('Clipper', 'Saved to Tolaria', result.path);
+
 		if (!isSidePanel) {
 			setTimeout(() => window.close(), 500);
 		}
 	} catch (error) {
-		console.error('Error in handleClipObsidian:', error);
-		showError('failedToSaveFile');
-		throw error;
+		await handleSaveError(error);
 	}
+}
+
+/**
+ * Surface a save failure instead of silently doing nothing, and offer the
+ * download fallback so the clip is never lost.
+ */
+async function handleSaveError(error: unknown): Promise<void> {
+	console.error('Error saving to Tolaria:', error);
+
+	if (error instanceof NativeHostError) {
+		// A stale "installed" probe would otherwise keep failing until it expires.
+		await invalidateHostStatus();
+		showError(error.i18nKey);
+
+		if (error.isNotInstalled) {
+			showHostSetupBanner();
+		}
+		return;
+	}
+
+	showError('failedToSaveFile');
+}
+
+/** Persistent, actionable prompt: the install command, ready to copy. */
+function showHostSetupBanner(): void {
+	// showError() hides .clipper and reveals .error-message, flagging it with
+	// body.has-error. The banner has to follow whichever one is on screen.
+	const inErrorState = document.body.classList.contains('has-error');
+	const container = (inErrorState ? document.querySelector('.error-message') : null)
+		?? document.querySelector('.clipper')
+		?? document.body;
+
+	const existing = document.getElementById('host-setup-banner');
+	if (existing) {
+		if (existing.parentElement !== container) container.appendChild(existing);
+		return;
+	}
+
+	const banner = createElementWithClass('div', 'host-setup-banner');
+	banner.id = 'host-setup-banner';
+
+	const message = document.createElement('div');
+	message.className = 'host-setup-banner-message';
+	message.textContent = getMessage('hostNotInstalledDescription');
+	banner.appendChild(message);
+
+	const command = document.createElement('code');
+	command.className = 'host-setup-banner-command';
+	command.textContent = 'npx tolaria-clipper install-host';
+	command.title = getMessage('copyToClipboard');
+	command.addEventListener('click', () => {
+		navigator.clipboard.writeText(command.textContent || '').catch(() => { /* clipboard may be blocked */ });
+	});
+	banner.appendChild(command);
+
+	container.insertBefore(banner, container.firstChild);
 }
 
 function addSecondaryAction(container: Element, actionType: string, handler: () => void) {

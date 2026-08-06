@@ -74,8 +74,13 @@ export interface Settings {
 	vaults: string[];
 	showMoreActionsButton: boolean;
 	betaFeatures: boolean;
-	legacyMode: boolean;
-	silentOpen: boolean;
+	/** Navigate to the note's tolaria:// link after saving. The only path that focuses Tolaria. */
+	openAfterSave: boolean;
+	/** Best-effort refresh over Tolaria's tool bridge. Redundant with the file watcher; off by default. */
+	notifyTolariaBridge: boolean;
+	/** Folder holding daily notes, vault-relative. Empty means the vault root. */
+	dailyNotePath: string;
+	dailyNoteFormat: string;
 	openBehavior: 'popup' | 'embedded' | 'reader';
 	highlighterEnabled: boolean;
 	alwaysShowHighlights: boolean;

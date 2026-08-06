@@ -18,12 +18,24 @@ export function escapeDoubleQuotes(str: string): string {
 	return str.replace(/"/g, '\\"');
 }
 
-export function sanitizeFileName(fileName: string): string {
-	const platform = (navigator as any).userAgentData?.platform || navigator.platform || '';
+/**
+ * Strip characters that are illegal in filenames, or that would be parsed as
+ * wikilink syntax.
+ *
+ * The platform can be passed explicitly so the native host — which has no
+ * `navigator` — reuses this exact function. Forking it would let the path the
+ * popup previews drift from the path the host actually writes.
+ */
+export function sanitizeFileName(fileName: string, platformOverride?: string): string {
+	const platform = platformOverride
+		?? (typeof navigator !== 'undefined'
+			? ((navigator as any).userAgentData?.platform || navigator.platform || '')
+			: '');
 	const isWindows = /win/i.test(platform);
-	const isMac = /mac/i.test(platform);
+	const isMac = /mac|darwin/i.test(platform);
 
-	// First remove Obsidian-specific characters that should be sanitized across all platforms
+	// Wikilink syntax characters, stripped on every platform: Tolaria resolves
+	// [[links]] with | aliases and # heading anchors.
 	let sanitized = fileName.replace(/[#|\^\[\]]/g, '');
 
 	if (isWindows) {

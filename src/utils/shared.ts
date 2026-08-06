@@ -139,6 +139,59 @@ export function addSchemaOrgDataToVariables(schemaData: any, variables: Record<s
 // ---------------------------------------------------------------------------
 
 /**
+ * Split a comma-separated value without cutting inside a wikilink, so
+ * `[[a, b]], [[c]]` yields two items rather than three.
+ */
+export function splitOutsideWikilinks(value: string): string[] {
+	const items: string[] = [];
+	let current = '';
+	let depth = 0;
+
+	for (let i = 0; i < value.length; i++) {
+		if (value.startsWith('[[', i)) {
+			depth++;
+			current += '[[';
+			i++;
+			continue;
+		}
+		if (value.startsWith(']]', i) && depth > 0) {
+			depth--;
+			current += ']]';
+			i++;
+			continue;
+		}
+		if (value[i] === ',' && depth === 0) {
+			items.push(current);
+			current = '';
+			continue;
+		}
+		current += value[i];
+	}
+	items.push(current);
+
+	return items.map(item => item.trim()).filter(item => item.length > 0);
+}
+
+/**
+ * Normalise one relationship target to a bare note reference.
+ *
+ * Accepts values that already carry wikilink brackets (the `wikilink` filter
+ * emits them) as well as plain names, and drops a trailing `.md` so links
+ * resolve rather than pointing at a filename Tolaria will not match.
+ */
+function toWikilinkTarget(item: string): string {
+	const unwrapped = item.replace(/^\[\[/, '').replace(/\]\]$/, '').trim();
+	const withoutExtension = unwrapped.replace(/\.md$/i, '');
+	return withoutExtension.trim();
+}
+
+/** A scalar YAML token that needs no quoting. */
+function isSafeYamlToken(value: string): boolean {
+	return /^[A-Za-z][A-Za-z0-9_-]*$/.test(value)
+		&& !/^(true|false|null|yes|no|on|off)$/i.test(value);
+}
+
+/**
  * Generate YAML frontmatter from compiled properties.
  * Property types are passed in as a map rather than read from browser storage.
  */
@@ -162,6 +215,42 @@ export function generateFrontmatter(
 		const propertyType = propertyTypes[property.name] || 'text';
 
 		switch (propertyType) {
+			// Tolaria treats any frontmatter field containing wikilinks as a
+			// relationship. Emitting the key even when empty matters: saved
+			// views filter on `is_empty`, and Tolaria shows empty keys as
+			// placeholders in the Properties panel.
+			case 'relation': {
+				const targets = splitOutsideWikilinks(property.value)
+					.map(toWikilinkTarget)
+					.filter(Boolean);
+
+				if (targets.length === 0) {
+					frontmatter += '\n';
+				} else if (targets.length === 1) {
+					frontmatter += ` "[[${escapeDoubleQuotes(targets[0])}]]"\n`;
+				} else {
+					frontmatter += '\n';
+					for (const target of targets) {
+						frontmatter += `  - "[[${escapeDoubleQuotes(target)}]]"\n`;
+					}
+				}
+				break;
+			}
+
+			// Unquoted when safe, so we write `type: Clippings` — matching what
+			// Tolaria itself writes.
+			case 'keyword': {
+				const value = property.value.trim();
+				if (!value) {
+					frontmatter += '\n';
+				} else if (isSafeYamlToken(value)) {
+					frontmatter += ` ${value}\n`;
+				} else {
+					frontmatter += ` "${escapeDoubleQuotes(value)}"\n`;
+				}
+				break;
+			}
+
 			case 'multitext': {
 				let items: string[];
 				if (property.value.trim().startsWith('["') && property.value.trim().endsWith('"]')) {
@@ -171,7 +260,7 @@ export function generateFrontmatter(
 						items = property.value.split(',').map(item => item.trim());
 					}
 				} else {
-					items = property.value.split(/,(?![^\[]*\]\])/).map(item => item.trim());
+					items = splitOutsideWikilinks(property.value);
 				}
 				items = items.filter(item => item !== '');
 				if (items.length > 0) {

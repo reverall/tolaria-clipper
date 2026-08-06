@@ -24,3 +24,6 @@ assets/shared
 .cursorrules
 .env
 context/
+
+# Chrome extension signing key — pins the extension ID, never commit
+.keys/

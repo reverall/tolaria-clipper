@@ -7,8 +7,10 @@ export type { Settings, ModelConfig, PropertyType, HistoryEntry, Provider, Ratin
 export let generalSettings: Settings = {
 	vaults: [],
 	betaFeatures: false,
-	legacyMode: false,
-	silentOpen: false,
+	openAfterSave: false,
+	notifyTolariaBridge: false,
+	dailyNotePath: '',
+	dailyNoteFormat: 'YYYY-MM-DD',
 	openBehavior: 'popup',
 	highlighterEnabled: true,
 	alwaysShowHighlights: false,
@@ -62,8 +64,10 @@ interface StorageData {
 	general_settings?: {
 		showMoreActionsButton?: boolean;
 		betaFeatures?: boolean;
-		legacyMode?: boolean;
-		silentOpen?: boolean;
+		openAfterSave?: boolean;
+		notifyTolariaBridge?: boolean;
+		dailyNotePath?: string;
+		dailyNoteFormat?: string;
 		openBehavior?: boolean | 'popup' | 'embedded';
 		saveBehavior?: 'addToObsidian' | 'copyToClipboard' | 'saveFile';
 	};
@@ -111,7 +115,7 @@ interface StorageData {
 	migrationVersion?: number;
 }
 
-const CURRENT_MIGRATION_VERSION = 1;
+const CURRENT_MIGRATION_VERSION = 2;
 
 export async function loadSettings(): Promise<Settings> {
 	const data = await browser.storage.sync.get(null) as StorageData;
@@ -121,8 +125,10 @@ export async function loadSettings(): Promise<Settings> {
 		vaults: [],
 		showMoreActionsButton: false,
 		betaFeatures: false,
-		legacyMode: false,
-		silentOpen: false,
+		openAfterSave: false,
+		notifyTolariaBridge: false,
+		dailyNotePath: '',
+		dailyNoteFormat: 'YYYY-MM-DD',
 		openBehavior: 'popup',
 		highlighterEnabled: true,
 		alwaysShowHighlights: true,
@@ -183,8 +189,10 @@ export async function loadSettings(): Promise<Settings> {
 		vaults: sanitizedVaults.length > 0 ? sanitizedVaults : defaultSettings.vaults,
 		showMoreActionsButton: data.general_settings?.showMoreActionsButton ?? defaultSettings.showMoreActionsButton,
 		betaFeatures: data.general_settings?.betaFeatures ?? defaultSettings.betaFeatures,
-		legacyMode: data.general_settings?.legacyMode ?? defaultSettings.legacyMode,
-		silentOpen: data.general_settings?.silentOpen ?? defaultSettings.silentOpen,
+		openAfterSave: data.general_settings?.openAfterSave ?? defaultSettings.openAfterSave,
+		notifyTolariaBridge: data.general_settings?.notifyTolariaBridge ?? defaultSettings.notifyTolariaBridge,
+		dailyNotePath: data.general_settings?.dailyNotePath ?? defaultSettings.dailyNotePath,
+		dailyNoteFormat: data.general_settings?.dailyNoteFormat || defaultSettings.dailyNoteFormat,
 		openBehavior: typeof data.general_settings?.openBehavior === 'boolean' 
 			? (data.general_settings.openBehavior ? 'embedded' : 'popup') 
 			: (data.general_settings?.openBehavior ?? defaultSettings.openBehavior),
@@ -236,8 +244,10 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 		general_settings: {
 			showMoreActionsButton: generalSettings.showMoreActionsButton,
 			betaFeatures: generalSettings.betaFeatures,
-			legacyMode: generalSettings.legacyMode,
-			silentOpen: generalSettings.silentOpen,
+			openAfterSave: generalSettings.openAfterSave,
+			notifyTolariaBridge: generalSettings.notifyTolariaBridge,
+			dailyNotePath: generalSettings.dailyNotePath,
+			dailyNoteFormat: generalSettings.dailyNoteFormat,
 			openBehavior: generalSettings.openBehavior,
 			saveBehavior: generalSettings.saveBehavior,
 		},
@@ -274,11 +284,6 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 		},
 		stats: generalSettings.stats
 	});
-}
-
-export async function setLegacyMode(enabled: boolean): Promise<void> {
-	await saveSettings({ legacyMode: enabled });
-	console.log(`Legacy mode ${enabled ? 'enabled' : 'disabled'}`);
 }
 
 export async function incrementStat(

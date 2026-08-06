@@ -132,9 +132,26 @@
 								</div>
 							</div>
 							<div class="setting-group">
+								<div class="setting-item setting-item-heading"><h3 data-i18n="tolariaConnection">Tolaria connection</h3></div>
+								<div class="setting-items">
+								<div class="setting-item-description" data-i18n="tolariaConnectionDescription">Web Clipper writes notes straight into your vault folder through a small helper, so clipping never brings Tolaria to the&nbsp;foreground.</div>
+								<div id="host-status" class="setting-item-description"></div>
+								<div class="setting-item mod-horizontal">
+									<div class="setting-item-info">
+										<label for="host-recheck-btn" data-i18n="hostRecheck">Connection status</label>
+										<div class="setting-item-description" data-i18n="hostRecheckDescription">Run a diagnostic against the helper, your browsers and your&nbsp;vaults.</div>
+									</div>
+									<div class="setting-item-control">
+										<button type="button" id="host-recheck-btn" class="btn" data-i18n="hostRecheckButton">Check again</button>
+									</div>
+								</div>
+								<pre id="host-doctor-output" class="host-doctor-output" style="display: none;"></pre>
+								</div>
+							</div>
+							<div class="setting-group">
 								<div class="setting-item setting-item-heading"><h3 data-i18n="vaults">Vaults</h3></div>
 								<div class="setting-items">
-								<div class="setting-item-description" data-i18n="vaultsDescription">By default, clipped notes are saved to the currently open vault. You can add vaults here if you want the option to save to different vaults. Vault names must exactly match the name of the Obsidian vault. Press <strong>enter</strong> to add a&nbsp;vault.</div>
+								<div class="setting-item-description" data-i18n="vaultsDescription">Vaults are discovered automatically from Tolaria. Drag to reorder how they appear in the clipper. Add one manually only if it is missing from the&nbsp;list.</div>
 								<input type="text" id="vault-input" data-i18n="addVaultPlaceholder" placeholder="Press enter to add a vault" autocomplete="off" spellcheck="false" />
 								<ul id="vault-list" class="setting-item-list"></ul>
 								</div>
@@ -182,27 +199,49 @@
 									</div>
 									<div class="setting-item mod-horizontal mod-toggle">
 										<div class="setting-item-info">
-											<label for="silent-open-toggle" data-i18n="silentOpen">Save clipped note without opening&nbsp;it</label>
-											<div class="setting-item-description" data-i18n="silentOpenDescription">
-												Clipped notes will be saved but will not open as a new tab. Obsidian will still be brought to the foreground.
+											<label for="open-after-save-toggle" data-i18n="openAfterSave">Open the note in Tolaria after&nbsp;clipping</label>
+											<div class="setting-item-description" data-i18n="openAfterSaveDescription">
+												Off by default. Clipped notes are written straight into your vault and picked up by Tolaria automatically, without bringing the app to the foreground.
 											</div>
 										</div>
 										<div class="setting-item-control">
 											<div class="checkbox-container">
-												<input type="checkbox" id="silent-open-toggle" />
+												<input type="checkbox" id="open-after-save-toggle" />
 											</div>
+										</div>
+									</div>
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<label for="daily-note-path" data-i18n="dailyNotePath">Daily notes folder</label>
+											<div class="setting-item-description" data-i18n="dailyNotePathDescription">
+												Where templates that add to the daily note should write. Leave empty for the vault&nbsp;root.
+											</div>
+										</div>
+										<div class="setting-item-control">
+											<input type="text" id="daily-note-path" placeholder="Dailies" autocomplete="off" spellcheck="false" />
+										</div>
+									</div>
+									<div class="setting-item mod-horizontal">
+										<div class="setting-item-info">
+											<label for="daily-note-format" data-i18n="dailyNoteFormat">Daily note format</label>
+											<div class="setting-item-description" data-i18n="dailyNoteFormatDescription">
+												Filename format for daily notes, for example&nbsp;YYYY-MM-DD.
+											</div>
+										</div>
+										<div class="setting-item-control">
+											<input type="text" id="daily-note-format" placeholder="YYYY-MM-DD" autocomplete="off" spellcheck="false" />
 										</div>
 									</div>
 									<div class="setting-item mod-horizontal mod-toggle">
 										<div class="setting-item-info">
-											<label for="legacy-mode-toggle" data-i18n="legacyMode">Legacy&nbsp;mode</label>
-											<div class="setting-item-description" data-i18n="legacyModeDescription">
-												Uses the URI clipping method compatible with Obsidian 1.6.7 or earlier. Note that the length of the content you can clip is limited by your browser and OS. Some pages may fail without any errors.
+											<label for="notify-bridge-toggle" data-i18n="notifyTolariaBridge">Notify Tolaria after&nbsp;saving</label>
+											<div class="setting-item-description" data-i18n="notifyTolariaBridgeDescription">
+												Usually unnecessary — Tolaria watches your vault folder and picks up new notes on its own. Enable only if clips do not appear until you reload the&nbsp;vault.
 											</div>
 										</div>
 										<div class="setting-item-control">
 											<div class="checkbox-container">
-												<input type="checkbox" id="legacy-mode-toggle" />
+												<input type="checkbox" id="notify-bridge-toggle" />
 											</div>
 										</div>
 									</div>

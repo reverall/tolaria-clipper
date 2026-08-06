@@ -10,6 +10,7 @@
 		"clipboardWrite",
 		"commands",
 		"contextMenus",
+		"nativeMessaging",
 		"sidePanel",
 		"storage",
 		"scripting",
@@ -40,15 +41,33 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["http://*/*", "https://*/*"],
-			"js": ["browser-polyfill.min.js", "content.js"]
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			],
+			"js": [
+				"browser-polyfill.min.js",
+				"content.js"
+			]
 		}
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["reader.css", "reader-script.js", "browser-polyfill.min.js", "style.css", "side-panel.html", "flatten-shadow-dom.js", "highlighter.css"],
-			"extension_ids": ["*"],
-			"matches": [ "*://*/*" ]
+			"resources": [
+				"reader.css",
+				"reader-script.js",
+				"browser-polyfill.min.js",
+				"style.css",
+				"side-panel.html",
+				"flatten-shadow-dom.js",
+				"highlighter.css"
+			],
+			"extension_ids": [
+				"*"
+			],
+			"matches": [
+				"*://*/*"
+			]
 		}
 	],
 	"content_security_policy": {
@@ -83,5 +102,6 @@
 			},
 			"description": "__MSG_commandToggleReader__"
 		}
-	}
+	},
+	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwqWjW5P8PmwMSnJQ5k4BqxBMGfbi2QNK4ua9USVff4lUCzQ3vOTQZw80EYUHjDhy1kEbf/t4Eut3FLw5YmAI3FMhpE8fCi1gZTsjw4QWKTM7dpUKu4sU/7jG1BOLpYeeowTtifgmRsfBmlBQSCA6j9CnVGLLFOLepfYdbymCamk07roQGel7G1rFuuVSFWfbtCNKl/Dm+76idORLNozge4g9V/tioxNccttLQ3DZ9tWOyQZ++mX42QpLCFYMGK3d+d/KO3xwEZ3i3jccIV7/Lmc0I0bKMVraekzOEpCqKH9fMA+/L6yGBgtLjzbcnb630yIJj7iBbMoZZbSrl+S+mwIDAQAB"
 }

@@ -2624,7 +2624,7 @@ export class Reader {
 		const footer = doc.querySelector('.tolaria-reader-footer') as HTMLElement | null;
 		if (footer) {
 			const footerItems = [
-				'Obsidian Reader',
+				'Tolaria Reader',
 				content.wordCount ? new Intl.NumberFormat().format(content.wordCount) + ' words' : '',
 				content.parseTime ? 'parsed in ' + new Intl.NumberFormat().format(content.parseTime) + ' ms' : '',
 			].filter(Boolean);

@@ -23,11 +23,13 @@ import { formatDoctor } from '../native-host/doctor-format';
 
 dayjs.extend(weekOfYear);
 
+// No store listings for this fork — a good rating sends people to the
+// issue tracker instead, which is where feedback can actually land.
 const STORE_URLS = {
-	chrome: 'https://chromewebstore.google.com/detail/obsidian-web-clipper/cnjifjpddelmedmihgijeibhnjfabmlf',
-	firefox: 'https://addons.mozilla.org/en-US/firefox/addon/web-clipper-obsidian/',
-	safari: 'https://apps.apple.com/us/app/obsidian-web-clipper/id6720708363',
-	edge: 'https://microsoftedge.microsoft.com/addons/detail/obsidian-web-clipper/eigdjhmgnaaeaonimdklocfekkaanfme'
+	chrome: 'https://github.com/reverall/tolaria-clipper/issues',
+	firefox: 'https://github.com/reverall/tolaria-clipper/issues',
+	safari: 'https://github.com/reverall/tolaria-clipper/issues',
+	edge: 'https://github.com/reverall/tolaria-clipper/issues'
 };
 
 export function updateVaultList(): void {
@@ -215,7 +217,6 @@ export function initializeGeneralSettings(): void {
 
 		updateVaultList();
 		initializeShowMoreActionsToggle();
-		initializeBetaFeaturesToggle();
 		initializeOpenAfterSaveToggle();
 		initializeNotifyBridgeToggle();
 		initializeDailyNoteFields();
@@ -254,7 +255,6 @@ function initializeAutoSave(): void {
 function saveSettingsFromForm(): void {
 	const openBehaviorDropdown = document.getElementById('open-behavior-dropdown') as HTMLSelectElement;
 	const showMoreActionsToggle = document.getElementById('show-more-actions-toggle') as HTMLInputElement;
-	const betaFeaturesToggle = document.getElementById('beta-features-toggle') as HTMLInputElement;
 	const openAfterSaveToggle = document.getElementById('open-after-save-toggle') as HTMLInputElement;
 	const notifyBridgeToggle = document.getElementById('notify-bridge-toggle') as HTMLInputElement;
 	const highlighterToggle = document.getElementById('highlighter-toggle') as HTMLInputElement;
@@ -265,7 +265,6 @@ function saveSettingsFromForm(): void {
 		...generalSettings, // Keep existing settings
 		openBehavior: (openBehaviorDropdown?.value as Settings['openBehavior']) ?? generalSettings.openBehavior,
 		showMoreActionsButton: showMoreActionsToggle?.checked ?? generalSettings.showMoreActionsButton,
-		betaFeatures: betaFeaturesToggle?.checked ?? generalSettings.betaFeatures,
 		openAfterSave: openAfterSaveToggle?.checked ?? generalSettings.openAfterSave,
 		notifyTolariaBridge: notifyBridgeToggle?.checked ?? generalSettings.notifyTolariaBridge,
 		highlighterEnabled: highlighterToggle?.checked ?? generalSettings.highlighterEnabled,
@@ -409,12 +408,6 @@ async function initializeKeyboardShortcuts(): Promise<void> {
 			});
 		});
 	}
-}
-
-function initializeBetaFeaturesToggle(): void {
-	initializeSettingToggle('beta-features-toggle', generalSettings.betaFeatures, (checked) => {
-		saveSettings({ ...generalSettings, betaFeatures: checked });
-	});
 }
 
 // Off by default: this is the only setting that lets a clip bring Tolaria to

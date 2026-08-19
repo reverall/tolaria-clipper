@@ -8,7 +8,6 @@ export default {} as any;
 
 export const generalSettings: Settings = {
 	vaults: [],
-	betaFeatures: false,
 	openAfterSave: false,
 	notifyTolariaBridge: false,
 	dailyNotePath: '',

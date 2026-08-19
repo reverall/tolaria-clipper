@@ -1149,7 +1149,7 @@ export interface ExportedHighlight {
 }
 
 // Export shape used by every highlight-export surface (highlights.html,
-// options-page export, clip-to-Obsidian content-extractor). Coalesces group
+// options-page export, clip-to-vault content-extractor). Coalesces group
 // members into one entry, joining content with blank lines; merges notes.
 // `transformContent` lets the clipper path run its content through
 // createMarkdownContent while the JSON exports pass it through verbatim.

@@ -73,7 +73,6 @@ export interface ReaderSettings {
 export interface Settings {
 	vaults: string[];
 	showMoreActionsButton: boolean;
-	betaFeatures: boolean;
 	/** Navigate to the note's tolaria:// link after saving. The only path that focuses Tolaria. */
 	openAfterSave: boolean;
 	/** Best-effort refresh over Tolaria's tool bridge. Redundant with the file watcher; off by default. */

@@ -6,7 +6,6 @@ export type { Settings, ModelConfig, PropertyType, HistoryEntry, Provider, Ratin
 
 export let generalSettings: Settings = {
 	vaults: [],
-	betaFeatures: false,
 	openAfterSave: false,
 	notifyTolariaBridge: false,
 	dailyNotePath: '',
@@ -63,7 +62,6 @@ export function getLocalStorage(key: string): Promise<any> {
 interface StorageData {
 	general_settings?: {
 		showMoreActionsButton?: boolean;
-		betaFeatures?: boolean;
 		openAfterSave?: boolean;
 		notifyTolariaBridge?: boolean;
 		dailyNotePath?: string;
@@ -188,8 +186,7 @@ export async function loadSettings(): Promise<Settings> {
 	const defaultSettings: Settings = {
 		vaults: [],
 		showMoreActionsButton: false,
-		betaFeatures: false,
-		openAfterSave: false,
+			openAfterSave: false,
 		notifyTolariaBridge: false,
 		dailyNotePath: '',
 		dailyNoteFormat: 'YYYY-MM-DD',
@@ -266,7 +263,6 @@ export async function loadSettings(): Promise<Settings> {
 	const loadedSettings: Settings = {
 		vaults: sanitizedVaults.length > 0 ? sanitizedVaults : defaultSettings.vaults,
 		showMoreActionsButton: data.general_settings?.showMoreActionsButton ?? defaultSettings.showMoreActionsButton,
-		betaFeatures: data.general_settings?.betaFeatures ?? defaultSettings.betaFeatures,
 		openAfterSave: data.general_settings?.openAfterSave ?? defaultSettings.openAfterSave,
 		notifyTolariaBridge: data.general_settings?.notifyTolariaBridge ?? defaultSettings.notifyTolariaBridge,
 		dailyNotePath: data.general_settings?.dailyNotePath ?? defaultSettings.dailyNotePath,
@@ -325,7 +321,6 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 		vaults: generalSettings.vaults,
 		general_settings: {
 			showMoreActionsButton: generalSettings.showMoreActionsButton,
-			betaFeatures: generalSettings.betaFeatures,
 			openAfterSave: generalSettings.openAfterSave,
 			notifyTolariaBridge: generalSettings.notifyTolariaBridge,
 			dailyNotePath: generalSettings.dailyNotePath,

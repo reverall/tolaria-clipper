@@ -299,7 +299,7 @@ declare global {
 				highlighter.updatePageDomainSettings({ site: defuddled.site, favicon: defuddled.favicon });
 				sendResponse(response);
 			}).catch((error: unknown) => {
-				console.error('[Obsidian Clipper] getPageContent error:', error);
+				console.error('[Tolaria Clipper] getPageContent error:', error);
 				sendResponse({ success: false, error: error instanceof Error ? error.message : String(error) });
 			});
 			return true;

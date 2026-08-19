@@ -25,7 +25,7 @@ async function enableYouTubeEmbedRule(tabId: number): Promise<void> {
 				requestHeaders: [{
 					header: 'Referer',
 					operation: 'set' as any,
-					value: 'https://obsidian.md/'
+					value: 'https://tolaria.md/'
 				}]
 			},
 			condition: {
@@ -648,7 +648,7 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 				injectContentScript(tabId)
 					.then(() => sendResponse({ success: true }))
 					.catch((error) => {
-						console.error('[Obsidian Clipper] forceInjectContentScript failed:', error);
+						console.error('[Tolaria Clipper] forceInjectContentScript failed:', error);
 						sendResponse({ success: false, error: error instanceof Error ? error.message : String(error) });
 					});
 				return true;
@@ -665,7 +665,7 @@ browser.runtime.onMessage.addListener((request: unknown, sender: browser.Runtime
 				routeMessageToTab(tabId, message).then((response) => {
 					sendResponse(response);
 				}).catch((error) => {
-					console.error('[Obsidian Clipper] Error sending message to tab:', error);
+					console.error('[Tolaria Clipper] Error sending message to tab:', error);
 					sendResponse({
 						success: false,
 						error: error instanceof Error ? error.message : String(error)
@@ -781,7 +781,7 @@ const debouncedUpdateContextMenu = debounce(async (tabId: number) => {
 			contexts: browser.Menus.ContextType[];
 		}[] = [
 				{
-					id: "open-obsidian-clipper",
+					id: "open-tolaria-clipper",
 					title: "Save this page",
 					contexts: ["page", "selection", "image", "video", "audio"]
 				},
@@ -837,7 +837,7 @@ const debouncedUpdateContextMenu = debounce(async (tabId: number) => {
 }, 100); // 100ms debounce time
 
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
-	if (info.menuItemId === "open-obsidian-clipper") {
+	if (info.menuItemId === "open-tolaria-clipper") {
 		openPopup();
 	} else if (info.menuItemId === "enter-highlighter" && tab && tab.id) {
 		await setHighlighterMode(tab.id, true);

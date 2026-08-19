@@ -238,7 +238,9 @@ body.tolaria-highlighter-active {
 			}
 		}
 		&.mod-cta {
-			background-color: #895DF4 !important;
+			// Hardcoded rather than var(--color-accent): this menu is injected into
+			// arbitrary pages, which do not carry our custom properties.
+			background-color: #0D7DFF !important;
 			color: white !important;
 			padding: 0 8px !important;
 			box-shadow: var(--tolaria-highlighter-button-border) !important;

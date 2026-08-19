@@ -6,9 +6,11 @@
 	--safe-area-inset-left: env(safe-area-inset-left);
 	--safe-area-inset-right: env(safe-area-inset-right);
 
-	--accent-h: 258;
-	--accent-s: 88%;
-	--accent-l: 66%;
+	// Tolaria blue, sampled from the app icon. Was Obsidian's purple (258, 88%, 66%);
+	// contrast against white sits in the same place, so buttons read as before.
+	--accent-h: 212;
+	--accent-s: 100%;
+	--accent-l: 53%;
 
 	--background-primary: var(--color-base-00);
 	--background-primary-alt: var(--color-base-10);

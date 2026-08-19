@@ -18,7 +18,7 @@
 		"message": "Adaugă furnizor"
 	},
 	"addToTolaria": {
-		"message": "Adaugă în Obsidian"
+		"message": "Adaugă în Tolaria"
 	},
 	"addVaultPlaceholder": {
 		"message": "Apasă Enter pentru a adăuga seiful"
@@ -45,7 +45,7 @@
 		"message": "Lipsește cheia API"
 	},
 	"apiKeysWarning": {
-		"message": "Folosind un furnizor extern, ești de acord cu termenii și condițiile lor de utilizare și politica de confidențialitate. Cererile interpretorului sunt trimise direct către furnizorul ales. Obsidian nu colectează și nu stochează informații despre cererile tale."
+		"message": "Folosind un furnizor extern, ești de acord cu termenii și condițiile lor de utilizare și politica de confidențialitate. Cererile interpretorului sunt trimise direct către furnizorul ales. Tolaria nu colectează și nu stochează informații despre cererile tale."
 	},
 	"appendToDaily": {
 		"message": "Adaugă la nota zilnică, la sfârșit"
@@ -96,7 +96,7 @@
 		"message": "Comportament decupare"
 	},
 	"clipBehaviorDescription": {
-		"message": "Alege cum este salvat conținutul selectat în Obsidian. Setează variabila $strong_start${{content}}$strong_end$",
+		"message": "Alege cum este salvat conținutul selectat în Tolaria. Setează variabila $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -107,7 +107,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian nu poate accesa clipboardul tău. Încearcă instrucțiunile de depanare de aici: $1",
+		"message": "Tolaria nu poate accesa clipboardul tău. Încearcă instrucțiunile de depanare de aici: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -118,7 +118,7 @@
 		"message": "Închide"
 	},
 	"commandOpenClipper": {
-		"message": "Deschide Obsidian Clipper"
+		"message": "Deschide Tolaria Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Decupare rapidă"
@@ -195,20 +195,6 @@
 	"duplicate": {
 		"message": "Duplică"
 	},
-	"earlyAccessDescription": {
-		"message": "Folosește funcții care necesită cea mai recentă $link_start$versiune cu acces anticipat$link_end$ a Obsidian. În prezent necesită Obsidian 1.7.2 sau mai nou.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
-			}
-		}
-	},
-	"earlyAccessFeatures": {
-		"message": "Funcții cu acces anticipat"
-	},
 	"edit": {
 		"message": "Editează"
 	},
@@ -225,7 +211,7 @@
 		"message": "Încorporat"
 	},
 	"enableHighlighterDescription": {
-		"message": "Evidențiază conținut pe pagini web pentru a-l salva în Obsidian"
+		"message": "Evidențiază conținut pe pagini web pentru a-l salva în Tolaria"
 	},
 	"enableInterpreter": {
 		"message": "Activează interpretorul"
@@ -237,7 +223,7 @@
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/web-clipper/interpreter\" target=\"_blank\">"
+				"content": "<a href=\"https://github.com/reverall/tolaria-clipper/blob/main/docs/interpreter.md\" target=\"_blank\">"
 			},
 			"strong_end": {
 				"content": "</strong>"
@@ -271,22 +257,8 @@
 	"exportProperties": {
 		"message": "Exportă proprietăți"
 	},
-	"exportPropertiesDescription": {
-		"message": "Salvează proprietățile Web Clipper într-un fișier $strong_start$types.json$strong_end$ care poate fi importat în seiful tău Obsidian sau în Web Clipper pe alte dispozitive",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
-	},
-	"extensionDescription": {
-		"message": "Salvează conținut web într-un format privat și durabil care poate fi accesat offline. Extensia oficială de browser pentru Obsidian."
-	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Tolaria Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Nu s-a putut copia textul"
@@ -422,23 +394,6 @@
 	"importProperties": {
 		"message": "Importă proprietăți"
 	},
-	"importPropertiesDescription": {
-		"message": "Pentru a importa proprietăți din Obsidian, găsește fișierul $strong_1_start$types.json$strong_1_end$ în dosarul $strong_2_start$.obsidian$strong_2_end$ al seifului tău. Acest dosar este ascuns implicit în majoritatea sistemelor de operare.",
-		"placeholders": {
-			"strong_1_end": {
-				"content": "</strong>"
-			},
-			"strong_1_start": {
-				"content": "<strong>"
-			},
-			"strong_2_end": {
-				"content": "</strong>"
-			},
-			"strong_2_start": {
-				"content": "<strong>"
-			}
-		}
-	},
 	"importSettings": {
 		"message": "Importă setări"
 	},
@@ -476,12 +431,6 @@
 	},
 	"lastUsed": {
 		"message": "Ultima utilizare"
-	},
-	"legacyMode": {
-		"message": "Mod vechi"
-	},
-	"legacyModeDescription": {
-		"message": "Folosește metoda de captură URI compatibilă cu Obsidian 1.6.7 sau mai vechi. Reține că lungimea conținutului capturat este limitată de browser și sistemul de operare. Unele pagini pot eșua fără mesaj de eroare."
 	},
 	"loadArticle": {
 		"message": "Citește articolul"
@@ -975,12 +924,6 @@
 	"showPageVariables": {
 		"message": "Arată variabilele paginii"
 	},
-	"silentOpen": {
-		"message": "Salvează note fără a le deschide"
-	},
-	"silentOpenDescription": {
-		"message": "Notele decupate vor fi salvate dar nu vor fi deschise într-o filă nouă. Obsidian va fi totuși adus în prim-plan."
-	},
 	"sort": {
 		"message": "Sortează"
 	},
@@ -1074,7 +1017,7 @@
 		"message": "Seifuri"
 	},
 	"vaultsDescription": {
-		"message": "În mod implicit, notele decupate sunt salvate în seiful deschis. Poți adăuga seifuri aici dacă dorești opțiunea de a salva în diferite seifuri. Numele seifului trebuie să se potrivească exact cu numele seifului Obsidian. Apasă $strong_start$enter$strong_end$ pentru a adăuga un seif.",
+		"message": "În mod implicit, notele decupate sunt salvate în seiful deschis. Poți adăuga seifuri aici dacă dorești opțiunea de a salva în diferite seifuri. Numele seifului trebuie să se potrivească exact cu numele seifului Tolaria. Apasă $strong_start$enter$strong_end$ pentru a adăuga un seif.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"

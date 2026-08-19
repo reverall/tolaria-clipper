@@ -18,7 +18,7 @@
 		"message": "Magdagdag ng provider"
 	},
 	"addToTolaria": {
-		"message": "Idagdag sa Obsidian"
+		"message": "Idagdag sa Tolaria"
 	},
 	"addVaultPlaceholder": {
 		"message": "Pindutin ang Enter para magdagdag ng vault"
@@ -45,7 +45,7 @@
 		"message": "Nawawala ang API key"
 	},
 	"apiKeysWarning": {
-		"message": "Sa paggamit ng external provider, tinatanggap mo ang kanilang mga tuntunin at patakaran sa privacy. Ang mga kahilingan sa interpreter ay direktang ipinapadala sa iyong napiling provider. Hindi nangongolekta o nag-iimbak ang Obsidian ng impormasyon tungkol sa iyong mga kahilingan."
+		"message": "Sa paggamit ng external provider, tinatanggap mo ang kanilang mga tuntunin at patakaran sa privacy. Ang mga kahilingan sa interpreter ay direktang ipinapadala sa iyong napiling provider. Hindi nangongolekta o nag-iimbak ang Tolaria ng impormasyon tungkol sa iyong mga kahilingan."
 	},
 	"appendToDaily": {
 		"message": "Idagdag sa daily note, sa dulo"
@@ -96,7 +96,7 @@
 		"message": "Pag-uugali ng pag-clip"
 	},
 	"clipBehaviorDescription": {
-		"message": "Piliin kung paano i-save ang napiling content sa Obsidian. Itinatakda ang variable na $strong_start${{content}}$strong_end$",
+		"message": "Piliin kung paano i-save ang napiling content sa Tolaria. Itinatakda ang variable na $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -107,7 +107,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Hindi ma-access ng Obsidian ang iyong clipboard. Subukan ang mga tagubilin sa pag-troubleshoot dito: $1",
+		"message": "Hindi ma-access ng Tolaria ang iyong clipboard. Subukan ang mga tagubilin sa pag-troubleshoot dito: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -118,7 +118,7 @@
 		"message": "Isara"
 	},
 	"commandOpenClipper": {
-		"message": "Buksan ang Obsidian Clipper"
+		"message": "Buksan ang Tolaria Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Quick clip"
@@ -195,20 +195,6 @@
 	"duplicate": {
 		"message": "Kopyahin"
 	},
-	"earlyAccessDescription": {
-		"message": "Gamitin ang mga feature na nangangailangan ng pinakabagong $link_start$early access version$link_end$ ng Obsidian. Kasalukuyang kailangan ang Obsidian 1.7.2 o mas bago.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
-			}
-		}
-	},
-	"earlyAccessFeatures": {
-		"message": "Mga early access na feature"
-	},
 	"edit": {
 		"message": "I-edit"
 	},
@@ -225,7 +211,7 @@
 		"message": "Naka-embed"
 	},
 	"enableHighlighterDescription": {
-		"message": "Mag-highlight ng content sa mga webpage para i-save sa Obsidian"
+		"message": "Mag-highlight ng content sa mga webpage para i-save sa Tolaria"
 	},
 	"enableInterpreter": {
 		"message": "I-enable ang interpreter"
@@ -237,7 +223,7 @@
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/web-clipper/interpreter\" target=\"_blank\">"
+				"content": "<a href=\"https://github.com/reverall/tolaria-clipper/blob/main/docs/interpreter.md\" target=\"_blank\">"
 			},
 			"strong_end": {
 				"content": "</strong>"
@@ -271,22 +257,8 @@
 	"exportProperties": {
 		"message": "I-export ang mga property"
 	},
-	"exportPropertiesDescription": {
-		"message": "I-save ang mga Web Clipper property sa $strong_start$types.json$strong_end$ file, na maaaring i-import sa iyong Obsidian vault o Web Clipper sa ibang device",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
-	},
-	"extensionDescription": {
-		"message": "I-save ang web content sa pribado at pangmatagalang format, na maaaring ma-access offline. Ang opisyal na browser extension para sa Obsidian."
-	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Tolaria Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Hindi makopya ang text"
@@ -422,23 +394,6 @@
 	"importProperties": {
 		"message": "I-import ang mga property"
 	},
-	"importPropertiesDescription": {
-		"message": "Para i-import ang mga property mula sa Obsidian, hanapin ang $strong_1_start$types.json$strong_1_end$ file sa $strong_2_start$.obsidian$strong_2_end$ folder ng iyong vault. Ang folder na ito ay nakatago by default sa karamihan ng operating system.",
-		"placeholders": {
-			"strong_1_end": {
-				"content": "</strong>"
-			},
-			"strong_1_start": {
-				"content": "<strong>"
-			},
-			"strong_2_end": {
-				"content": "</strong>"
-			},
-			"strong_2_start": {
-				"content": "<strong>"
-			}
-		}
-	},
 	"importSettings": {
 		"message": "I-import ang mga setting"
 	},
@@ -476,12 +431,6 @@
 	},
 	"lastUsed": {
 		"message": "Huling ginamit"
-	},
-	"legacyMode": {
-		"message": "Legacy mode"
-	},
-	"legacyModeDescription": {
-		"message": "Gumagamit ng URI capture method na compatible sa Obsidian 1.6.7 at mas luma. Tandaan na ang haba ng na-capture na content ay limitado ng browser at operating system. Ang ilang pahina ay maaaring mabigo nang walang error message."
 	},
 	"loadArticle": {
 		"message": "Basahin ang artikulo"
@@ -975,12 +924,6 @@
 	"showPageVariables": {
 		"message": "Ipakita ang mga variable ng pahina"
 	},
-	"silentOpen": {
-		"message": "I-save ang mga note nang hindi binubuksan"
-	},
-	"silentOpenDescription": {
-		"message": "Ang mga na-clip na note ay mase-save pero hindi bubuksan sa bagong tab. Ang Obsidian ay dadalhin pa rin sa foreground."
-	},
 	"sort": {
 		"message": "Ayusin"
 	},
@@ -1074,7 +1017,7 @@
 		"message": "Mga Vault"
 	},
 	"vaultsDescription": {
-		"message": "By default, ang mga na-clip na note ay sine-save sa bukas na vault. Maaari kang magdagdag ng mga vault dito kung gusto mong magkaroon ng opsyon na mag-save sa iba't ibang vault. Ang pangalan ng vault ay dapat eksaktong tumugma sa pangalan ng Obsidian vault. Pindutin ang $strong_start$enter$strong_end$ para magdagdag ng vault.",
+		"message": "By default, ang mga na-clip na note ay sine-save sa bukas na vault. Maaari kang magdagdag ng mga vault dito kung gusto mong magkaroon ng opsyon na mag-save sa iba't ibang vault. Ang pangalan ng vault ay dapat eksaktong tumugma sa pangalan ng Tolaria vault. Pindutin ang $strong_start$enter$strong_end$ para magdagdag ng vault.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"

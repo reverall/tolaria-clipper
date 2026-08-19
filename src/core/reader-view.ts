@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	// Show loading spinner with themed background while fetching
 	const loadingDiv = document.createElement('div');
-	loadingDiv.className = 'obsidian-reader-loading';
+	loadingDiv.className = 'tolaria-reader-loading';
 	const loadingText = document.createElement('div');
-	loadingText.className = 'obsidian-reader-loading-text';
+	loadingText.className = 'tolaria-reader-loading-text';
 	loadingText.textContent = getMessage('readerLoading');
 	loadingDiv.appendChild(loadingText);
 	document.body.replaceChildren(loadingDiv);
@@ -106,14 +106,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 		console.error('Failed to load page:', error);
 		document.body.textContent = '';
 		const container = document.createElement('div');
-		container.className = 'obsidian-reader-error';
+		container.className = 'tolaria-reader-error';
 		const text = document.createElement('div');
-		text.className = 'obsidian-reader-error-text';
+		text.className = 'tolaria-reader-error-text';
 		text.textContent = getMessage('readerLoadFailed');
 		container.appendChild(text);
 		if (url) {
 			const link = document.createElement('a');
-			link.className = 'obsidian-reader-error-link';
+			link.className = 'tolaria-reader-error-link';
 			link.href = url;
 			link.textContent = getMessage('disableReader');
 			container.appendChild(link);
@@ -330,7 +330,7 @@ async function applyReaderTheme() {
 		const settings = data.reader_settings as ReaderSettings | undefined;
 
 		const html = document.documentElement;
-		html.classList.add('obsidian-reader-active');
+		html.classList.add('tolaria-reader-active');
 
 		const isDark = settings
 			? settings.appearance === 'dark' || (settings.appearance === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
@@ -344,7 +344,7 @@ async function applyReaderTheme() {
 			}
 		}
 	} catch {
-		document.documentElement.classList.add('obsidian-reader-active');
+		document.documentElement.classList.add('tolaria-reader-active');
 		document.documentElement.classList.add(
 			window.matchMedia('(prefers-color-scheme: dark)').matches ? 'theme-dark' : 'theme-light'
 		);

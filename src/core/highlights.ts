@@ -163,7 +163,7 @@ async function applyReaderTheme() {
 		? settings.appearance === 'dark' || (settings.appearance === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
 		: window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-	highlightThemeClasses = ['obsidian-reader-active', isDark ? 'theme-dark' : 'theme-light'];
+	highlightThemeClasses = ['tolaria-reader-active', isDark ? 'theme-dark' : 'theme-light'];
 
 	if (settings) {
 		const effectiveTheme = isDark && settings.darkTheme !== 'same' ? settings.darkTheme : settings.lightTheme;

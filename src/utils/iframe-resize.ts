@@ -24,7 +24,7 @@ interface ResizeCallbacks {
 
 export function addResizeHandle(doc: Document, container: HTMLElement, direction: string, callbacks?: ResizeCallbacks): void {
 	const handle = doc.createElement('div');
-	handle.className = `obsidian-clipper-resize-handle obsidian-clipper-resize-handle-${direction}`;
+	handle.className = `tolaria-clipper-resize-handle tolaria-clipper-resize-handle-${direction}`;
 	container.appendChild(handle);
 
 	let startX: number, startY: number, startWidth: number, startHeight: number, startTop: number;

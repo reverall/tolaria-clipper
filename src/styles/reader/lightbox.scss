@@ -1,4 +1,4 @@
-.obsidian-reader-lightbox {
+.tolaria-reader-lightbox {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -84,7 +84,7 @@
 	}
 }
 
-.obsidian-reader-active {
+.tolaria-reader-active {
 	img:not(a img):not(figure img) {
 		position: relative;
 		cursor: zoom-in;

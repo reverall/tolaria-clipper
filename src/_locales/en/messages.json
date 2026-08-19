@@ -17,8 +17,8 @@
 	"addProviderTitle": {
 		"message": "Add provider"
 	},
-	"addToObsidian": {
-		"message": "Add to Obsidian"
+	"addToTolaria": {
+		"message": "Add to Tolaria"
 	},
 	"addVaultPlaceholder": {
 		"message": "Press enter to add a vault"

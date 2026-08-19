@@ -1225,7 +1225,7 @@ export async function copyToClipboard(content: string) {
 		// Change the main button text temporarily
 		const clipButton = document.getElementById('clip-btn');
 		if (clipButton) {
-			const originalText = clipButton.textContent || getMessage('addToObsidian');
+			const originalText = clipButton.textContent || getMessage('addToTolaria');
 			clipButton.textContent = getMessage('copied');
 			
 			// Reset the text after 1.5 seconds
@@ -1302,18 +1302,18 @@ async function determineMainAction() {
 			mainButton.textContent = getMessage('copyToClipboard');
 			mainButton.onclick = () => copyContent();
 			// Add direct actions to secondary
-			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipTolaria());
+			addSecondaryAction(secondaryActions, 'addToTolaria', () => handleClipTolaria());
 			addSecondaryAction(secondaryActions, 'saveFile', handleSaveToDownloads);
 			break;
 		case 'saveFile':
 			mainButton.textContent = getMessage('saveFile');
 			mainButton.onclick = () => handleSaveToDownloads();
 			// Add direct actions to secondary
-			addSecondaryAction(secondaryActions, 'addToObsidian', () => handleClipTolaria());
+			addSecondaryAction(secondaryActions, 'addToTolaria', () => handleClipTolaria());
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
 			break;
-		default: // 'addToObsidian'
-			mainButton.textContent = getMessage('addToObsidian');
+		default: // 'addToTolaria'
+			mainButton.textContent = getMessage('addToTolaria');
 			mainButton.onclick = () => handleClipTolaria();
 			// Add direct actions to secondary
 			addSecondaryAction(secondaryActions, 'copyToClipboard', copyContent);
@@ -1368,7 +1368,7 @@ async function handleClipTolaria(): Promise<void> {
 		});
 
 		const tabInfo = await getCurrentTabInfo();
-		await incrementStat('addToObsidian', selectedVault, path, tabInfo.url, tabInfo.title);
+		await incrementStat('addToTolaria', selectedVault, path, tabInfo.url, tabInfo.title);
 
 		lastSelectedVault = selectedVault;
 		await setLocalStorage('lastSelectedVault', lastSelectedVault);
@@ -1470,7 +1470,7 @@ function getActionIcon(actionType: string): string {
 	switch (actionType) {
 		case 'copyToClipboard': return 'copy';
 		case 'saveFile': return 'file-down';
-		case 'addToObsidian': return 'pen-line';
+		case 'addToTolaria': return 'pen-line';
 		default: return 'plus';
 	}
 }

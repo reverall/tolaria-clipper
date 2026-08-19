@@ -233,25 +233,25 @@ export class Reader {
 		// Clip button with dropdown
 		const clipButton = doc.createElement('button');
 		clipButton.className = 'obsidian-reader-settings-trigger nav-btn';
-		clipButton.setAttribute('aria-label', getMessage('addToObsidian'));
+		clipButton.setAttribute('aria-label', getMessage('addToTolaria'));
 		clipButton.appendChild(this.createSVG({
 			width: '18', height: '18', viewBox: '0 0 24 24', strokeWidth: '1.75',
 			paths: ['m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48'],
 		}));
 
-		const addToObsidianBtn = doc.createElement('button');
-		addToObsidianBtn.className = 'nav-btn';
-		addToObsidianBtn.setAttribute('aria-label', getMessage('addToObsidian'));
-		const obsidianIcon = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
-		obsidianIcon.setAttribute('width', '18');
-		obsidianIcon.setAttribute('height', '18');
-		obsidianIcon.setAttribute('viewBox', '0 0 256 256');
-		obsidianIcon.setAttribute('fill', 'currentColor');
+		const addToTolariaBtn = doc.createElement('button');
+		addToTolariaBtn.className = 'nav-btn';
+		addToTolariaBtn.setAttribute('aria-label', getMessage('addToTolaria'));
+		const tolariaIcon = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		tolariaIcon.setAttribute('width', '18');
+		tolariaIcon.setAttribute('height', '18');
+		tolariaIcon.setAttribute('viewBox', '0 0 256 256');
+		tolariaIcon.setAttribute('fill', 'currentColor');
 		// Droplet with the glint cut out via evenodd, so the mark stays monochrome
 		// and follows currentColor like every other button in this toolbar.
-		setSVGChildren(obsidianIcon, '<path fill-rule="evenodd" d="M128 6C128 6 218 96 218 160A90 90 0 0 1 38 160C38 96 128 6 128 6ZM101 218A64 64 0 0 1 64.2 165.6L76.2 164.5A52 52 0 0 0 106 207.1Z"/>');
-		addToObsidianBtn.appendChild(obsidianIcon);
-		addToObsidianBtn.addEventListener('click', () => {
+		setSVGChildren(tolariaIcon, '<path fill-rule="evenodd" d="M128 6C128 6 218 96 218 160A90 90 0 0 1 38 160C38 96 128 6 128 6ZM101 218A64 64 0 0 1 64.2 165.6L76.2 164.5A52 52 0 0 0 106 207.1Z"/>');
+		addToTolariaBtn.appendChild(tolariaIcon);
+		addToTolariaBtn.addEventListener('click', () => {
 			if (Reader.isReaderPage) {
 				Reader.toggleReaderPageIframe(doc);
 			} else {
@@ -342,7 +342,7 @@ export class Reader {
 		triggerGroup.appendChild(highlighterBtn);
 		triggerGroup.appendChild(clipButton);
 		triggerGroup.appendChild(trigger);
-		triggerGroup.appendChild(addToObsidianBtn);
+		triggerGroup.appendChild(addToTolariaBtn);
 		settingsBar.appendChild(triggerGroup);
 		settingsBar.appendChild(clipDropdown);
 

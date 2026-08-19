@@ -108,7 +108,7 @@ Chain them with `|`, pass arguments after `:`.
 {{description|replace:"\n":" "|trim}}
 ```
 
-53 filters ship with the extension:
+54 filters ship with the extension:
 
 **Text** `lower` `upper` `title` `capitalize` `trim` `replace` `slice` `split` `join`
 `length` `unescape` `decode_uri` `template`
@@ -117,7 +117,7 @@ Chain them with `|`, pass arguments after `:`.
 
 **Markdown and HTML** `markdown` `strip_md` `stripmd` `strip_h1` `strip_tags` `strip_attr`
 `remove_html` `remove_tags` `remove_attr` `replace_tags` `blockquote` `callout` `footnote`
-`table` `list` `link` `image` `fragment_link` `html_to_json`
+`table` `list` `link` `wikilink` `image` `fragment_link` `html_to_json`
 
 **Lists and objects** `first` `last` `nth` `reverse` `unique` `merge` `map` `object`
 
@@ -125,3 +125,7 @@ Chain them with `|`, pass arguments after `:`.
 
 `kebab_slug` is the one to reach for on filenames; plain `kebab` is the upstream filter and
 handles only camelCase, spaces and underscores — it lets accents and punctuation through.
+
+`wikilink` is the one to reach for on `belongs_to` and `related_to`, since a relation only
+counts as one when its value is a wikilink. It wraps a string in `[[…]]`, maps over a list,
+and takes an alias as an argument: `{{author|wikilink}}`, `{{site|wikilink:"source"}}`.

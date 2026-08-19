@@ -17,8 +17,8 @@
 	"addProviderTitle": {
 		"message": "Add provider"
 	},
-	"addToObsidian": {
-		"message": "Add to Obsidian"
+	"addToTolaria": {
+		"message": "Add to Tolaria"
 	},
 	"addVaultPlaceholder": {
 		"message": "Press enter to add a vault"
@@ -45,7 +45,7 @@
 		"message": "No API key"
 	},
 	"apiKeysWarning": {
-		"message": "By using an external provider you agree to their terms and privacy policy. Interpreter requests are sent directly to the provider you choose. Obsidian does not gather or store any data about your requests."
+		"message": "By using an external provider you agree to their terms and privacy policy. Interpreter requests are sent directly to the provider you choose. Tolaria Clipper does not gather or store any data about your requests."
 	},
 	"appendToDaily": {
 		"message": "Add to daily note, at the bottom"
@@ -96,7 +96,7 @@
 		"message": "Clip behavior"
 	},
 	"clipBehaviorDescription": {
-		"message": "Choose how highlighted content is saved to Obsidian. Defines the $strong_start${{content}}$strong_end$ variable.",
+		"message": "Choose how highlighted content is saved to Tolaria. Defines the $strong_start${{content}}$strong_end$ variable.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -107,7 +107,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "Obsidian is not able to access your clipboard. Try the troubleshooting instructions here: $1",
+		"message": "Tolaria Clipper is not able to access your clipboard. Try the troubleshooting instructions here: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -118,7 +118,7 @@
 		"message": "Close"
 	},
 	"commandOpenClipper": {
-		"message": "Open Obsidian Clipper"
+		"message": "Open Tolaria Clipper"
 	},
 	"commandQuickClip": {
 		"message": "Quick clip"
@@ -204,20 +204,6 @@
 	"duplicate": {
 		"message": "Duplicate"
 	},
-	"earlyAccessDescription": {
-		"message": "Use features that require the latest $link_start$early access version$link_end$ of Obsidian. Currently requires Obsidian 1.7.2 or later.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
-			}
-		}
-	},
-	"earlyAccessFeatures": {
-		"message": "Early access features"
-	},
 	"edit": {
 		"message": "Edit"
 	},
@@ -234,7 +220,7 @@
 		"message": "Embedded"
 	},
 	"enableHighlighterDescription": {
-		"message": "Highlight content on web pages that you can save to Obsidian."
+		"message": "Highlight content on web pages that you can save to Tolaria."
 	},
 	"enableInterpreter": {
 		"message": "Enable interpreter"
@@ -246,7 +232,7 @@
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/web-clipper/interpreter\" target=\"_blank\">"
+				"content": "<a href=\"https://github.com/reverall/tolaria-clipper/blob/main/docs/interpreter.md\" target=\"_blank\">"
 			},
 			"strong_end": {
 				"content": "</strong>"
@@ -281,7 +267,7 @@
 		"message": "Export properties"
 	},
 	"exportPropertiesDescription": {
-		"message": "Save Web Clipper properties to a $strong_start$types.json$strong_end$ file that can be imported into your Obsidian vault, or into Web Clipper on other devices.",
+		"message": "Save Tolaria Clipper properties to a $strong_start$types.json$strong_end$ file that can be imported on other devices.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -292,10 +278,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Save content from the web in a private and durable format that you can access offline. The official browser extension for Obsidian."
+		"message": "Save and highlight web pages straight into your Tolaria vault, in a private and durable format you can access offline."
 	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Tolaria Clipper"
 	},
 	"failedToCopyText": {
 		"message": "Failed to copy text"
@@ -497,19 +483,13 @@
 		"message": "Import properties"
 	},
 	"importPropertiesDescription": {
-		"message": "To import your properties from Obsidian, locate the $strong_1_start$types.json$strong_1_end$ file in the $strong_2_start$.obsidian$strong_2_end$ folder within your vault. Note this folder is hidden by default on most operating systems.",
+		"message": "Import a $strong_start$types.json$strong_end$ file exported from another install of Tolaria Clipper.",
 		"placeholders": {
-			"strong_1_end": {
-				"content": "</strong>"
-			},
-			"strong_1_start": {
+			"strong_start": {
 				"content": "<strong>"
 			},
-			"strong_2_end": {
+			"strong_end": {
 				"content": "</strong>"
-			},
-			"strong_2_start": {
-				"content": "<strong>"
 			}
 		}
 	},
@@ -624,7 +604,7 @@
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/web-clipper/variables\" target=\"_blank\">"
+				"content": "<a href=\"https://github.com/reverall/tolaria-clipper/blob/main/docs/templates.md\" target=\"_blank\">"
 			}
 		}
 	},

@@ -8,7 +8,6 @@ export default {} as any;
 
 export const generalSettings: Settings = {
 	vaults: [],
-	betaFeatures: false,
 	openAfterSave: false,
 	notifyTolariaBridge: false,
 	dailyNotePath: '',
@@ -43,7 +42,7 @@ export const generalSettings: Settings = {
 		customCss: '',
 	},
 	stats: {
-		addToObsidian: 0,
+		addToTolaria: 0,
 		saveFile: 0,
 		copyToClipboard: 0,
 		share: 0,
@@ -51,7 +50,7 @@ export const generalSettings: Settings = {
 	},
 	history: [],
 	ratings: [],
-	saveBehavior: 'addToObsidian',
+	saveBehavior: 'addToTolaria',
 };
 
 export const loadSettings = async () => {};

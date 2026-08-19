@@ -25,7 +25,7 @@ interface ProviderPresets {
 	[key: string]: PresetProvider | string;
 }
 
-const PROVIDERS_URL = 'https://raw.githubusercontent.com/obsidianmd/obsidian-clipper/refs/heads/main/providers.json';
+const PROVIDERS_URL = 'https://raw.githubusercontent.com/reverall/tolaria-clipper/refs/heads/main/providers.json';
 const PRESET_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const PRESET_RETRY_DELAY = 60 * 1000; // 1 minute
 const LOCAL_STORAGE_KEY = 'provider_presets';

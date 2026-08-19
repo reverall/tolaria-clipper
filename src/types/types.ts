@@ -50,7 +50,7 @@ export interface Rating {
 	date: string;
 }
 
-export type SaveBehavior = 'addToObsidian' | 'saveFile' | 'copyToClipboard';
+export type SaveBehavior = 'addToTolaria' | 'saveFile' | 'copyToClipboard';
 
 export interface ReaderSettings {
 	fontSize: number;
@@ -73,7 +73,6 @@ export interface ReaderSettings {
 export interface Settings {
 	vaults: string[];
 	showMoreActionsButton: boolean;
-	betaFeatures: boolean;
 	/** Navigate to the note's tolaria:// link after saving. The only path that focuses Tolaria. */
 	openAfterSave: boolean;
 	/** Best-effort refresh over Tolaria's tool bridge. Redundant with the file watcher; off by default. */
@@ -94,7 +93,7 @@ export interface Settings {
 	propertyTypes: PropertyType[];
 	readerSettings: ReaderSettings;
 	stats: {
-		addToObsidian: number;
+		addToTolaria: number;
 		saveFile: number;
 		copyToClipboard: number;
 		share: number;
@@ -102,7 +101,7 @@ export interface Settings {
 	};
 	history: HistoryEntry[];
 	ratings: Rating[];
-	saveBehavior: 'addToObsidian' | 'saveFile' | 'copyToClipboard';
+	saveBehavior: 'addToTolaria' | 'saveFile' | 'copyToClipboard';
 }
 
 export interface ModelConfig {
@@ -116,7 +115,7 @@ export interface ModelConfig {
 export interface HistoryEntry {
 	datetime: string;
 	url: string;
-	action: 'addToObsidian' | 'saveFile' | 'copyToClipboard' | 'share' | 'readerMode';
+	action: 'addToTolaria' | 'saveFile' | 'copyToClipboard' | 'share' | 'readerMode';
 	title?: string;
 	vault?: string;
 	path?: string;

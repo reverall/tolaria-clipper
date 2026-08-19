@@ -1,6 +1,6 @@
 # Native host
 
-Web Clipper writes clipped notes **straight into your Tolaria vault folder**.
+Tolaria Clipper writes clipped notes **straight into your Tolaria vault folder**.
 Tolaria watches the vault with a filesystem watcher, so a new note shows up on
 its own — without the app being launched, focused, or even running.
 

@@ -17,7 +17,7 @@
 	"addProviderTitle": {
 		"message": "أضف مزود"
 	},
-	"addToObsidian": {
+	"addToTolaria": {
 		"message": "إضافة إلى أوبسيديان"
 	},
 	"addVaultPlaceholder": {
@@ -45,7 +45,7 @@
 		"message": "لا يوجد مفتاح API"
 	},
 	"apiKeysWarning": {
-		"message": "باستخدام مزود خارجي، فإنك توافق على شروطهم وسياسة الخصوصية الخاصة بهم. يتم إرسال طلبات المفسر مباشرة إلى المزود الذي تختاره. لا يقوم Obsidian بجمع أو تخزين أي بيانات حول طلباتك."
+		"message": "باستخدام مزود خارجي، فإنك توافق على شروطهم وسياسة الخصوصية الخاصة بهم. يتم إرسال طلبات المفسر مباشرة إلى المزود الذي تختاره. لا يقوم Tolaria بجمع أو تخزين أي بيانات حول طلباتك."
 	},
 	"appendToDaily": {
 		"message": "إضافة إلى الملاحظة اليومية، في النهاية"
@@ -107,7 +107,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "لا يستطيع Obsidian الوصول إلى الحافظة لديك. جرّب إرشادات استكشاف الأخطاء وإصلاحها هنا: $1",
+		"message": "لا يستطيع Tolaria الوصول إلى الحافظة لديك. جرّب إرشادات استكشاف الأخطاء وإصلاحها هنا: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -195,20 +195,6 @@
 	"duplicate": {
 		"message": "نسخ"
 	},
-	"earlyAccessDescription": {
-		"message": "استخدم الميزات التي تتطلب أحدث $link_start$نسخة وصول مبكر$link_end$ من أوبسيديان. تتطلب حالياً أوبسيديان 1.7.2 أو أحدث.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
-			}
-		}
-	},
-	"earlyAccessFeatures": {
-		"message": "ميزات الوصول المبكر"
-	},
 	"edit": {
 		"message": "تحرير"
 	},
@@ -237,7 +223,7 @@
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/web-clipper/interpreter\" target=\"_blank\">"
+				"content": "<a href=\"https://github.com/reverall/tolaria-clipper/blob/main/docs/interpreter.md\" target=\"_blank\">"
 			},
 			"strong_end": {
 				"content": "</strong>"
@@ -270,20 +256,6 @@
 	},
 	"exportProperties": {
 		"message": "تصدير الخصائص"
-	},
-	"exportPropertiesDescription": {
-		"message": "احفظ خصائص قاصّ الويب في ملف $strong_start$types.json$strong_end$ يمكن استيراده إلى خزينة أوبسيديان الخاصة بك، أو إلى قاصّ الويب على أجهزة أخرى.",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
-	},
-	"extensionDescription": {
-		"message": "احفظ المحتوى من الويب بتنسيق خاص ودائم يمكنك الوصول إليه دون اتصال. الإضافة الرسمية للمتصفح لأوبسيديان."
 	},
 	"extensionName": {
 		"message": "قاصّ أوبسيديان للويب"
@@ -422,23 +394,6 @@
 	"importProperties": {
 		"message": "استيراد الخصائص"
 	},
-	"importPropertiesDescription": {
-		"message": "لاستيراد خصائصك من أوبسيديان، حدد موقع ملف $strong_1_start$types.json$strong_1_end$ في مجلد $strong_2_start$.obsidian$strong_2_end$ داخل خزينتك. لاحظ أن هذا المجلد مخفي افتراضياً في معظم أنظمة التشغيل.",
-		"placeholders": {
-			"strong_1_end": {
-				"content": "</strong>"
-			},
-			"strong_1_start": {
-				"content": "<strong>"
-			},
-			"strong_2_end": {
-				"content": "</strong>"
-			},
-			"strong_2_start": {
-				"content": "<strong>"
-			}
-		}
-	},
 	"importSettings": {
 		"message": "استيراد الإعدادات"
 	},
@@ -476,12 +431,6 @@
 	},
 	"lastUsed": {
 		"message": "آخر استخدام"
-	},
-	"legacyMode": {
-		"message": "الوضع القديم"
-	},
-	"legacyModeDescription": {
-		"message": "يستخدم طريقة قص URI المتوافقة مع أوبسيديان 1.6.7 أو أقدم. لاحظ أن طول المحتوى الذي يمكنك قصه محدود بواسطة متصفحك ونظام التشغيل. قد تفشل بعض الصفحات بدون أي أخطاء."
 	},
 	"loadArticle": {
 		"message": "قراءة المقالة"
@@ -556,7 +505,7 @@
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/web-clipper/variables\" target=\"_blank\">"
+				"content": "<a href=\"https://github.com/reverall/tolaria-clipper/blob/main/docs/templates.md\" target=\"_blank\">"
 			}
 		}
 	},
@@ -982,12 +931,6 @@
 	},
 	"showPageVariables": {
 		"message": "إظهار متغيرات الصفحة"
-	},
-	"silentOpen": {
-		"message": "حفظ الملاحظة المقصوصة دون فتحها"
-	},
-	"silentOpenDescription": {
-		"message": "سيتم حفظ الملاحظات المقصوصة ولكن لن يتم فتحها كتبويب جديد. سيظل أوبسيديان يُجلب إلى المقدمة."
 	},
 	"sort": {
 		"message": "فرز"

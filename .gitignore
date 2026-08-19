@@ -24,6 +24,7 @@ assets/shared
 .cursorrules
 .env
 context/
+.playwright-mcp/
 
 # Chrome extension signing key — pins the extension ID, never commit
 .keys/

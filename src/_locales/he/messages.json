@@ -17,8 +17,8 @@
 	"addProviderTitle": {
 		"message": "הוסף ספק"
 	},
-	"addToObsidian": {
-		"message": "הוסף ל-Obsidian"
+	"addToTolaria": {
+		"message": "הוסף ל-Tolaria"
 	},
 	"addVaultPlaceholder": {
 		"message": "לחץ/י Enter להוספת כספת"
@@ -45,7 +45,7 @@
 		"message": "חסר מפתח API"
 	},
 	"apiKeysWarning": {
-		"message": "השימוש בספק חיצוני מהווה הסכמה לתנאי השימוש ומדיניות הפרטיות שלהם. בקשות המתרגם נשלחות ישירות לספק שבחרת. Obsidian אינו אוסף או מאחסן מידע על הבקשות שלך."
+		"message": "השימוש בספק חיצוני מהווה הסכמה לתנאי השימוש ומדיניות הפרטיות שלהם. בקשות המתרגם נשלחות ישירות לספק שבחרת. Tolaria אינו אוסף או מאחסן מידע על הבקשות שלך."
 	},
 	"appendToDaily": {
 		"message": "הוסף לרשימה היומית, בסוף"
@@ -96,7 +96,7 @@
 		"message": "אופן השמירה"
 	},
 	"clipBehaviorDescription": {
-		"message": "בחר כיצד התוכן הנבחר נשמר ל-Obsidian. מגדיר את המשתנה $strong_start${{content}}$strong_end$",
+		"message": "בחר כיצד התוכן הנבחר נשמר ל-Tolaria. מגדיר את המשתנה $strong_start${{content}}$strong_end$",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"
@@ -107,7 +107,7 @@
 		}
 	},
 	"clipboardError": {
-		"message": "ל-Obsidian אין אפשרות לגשת ללוח שלך. נסה את הוראות פתרון הבעיות כאן: $1",
+		"message": "ל-Tolaria אין אפשרות לגשת ללוח שלך. נסה את הוראות פתרון הבעיות כאן: $1",
 		"placeholders": {
 			"1": {
 				"content": "$1"
@@ -118,7 +118,7 @@
 		"message": "סגור"
 	},
 	"commandOpenClipper": {
-		"message": "פתח את Obsidian Clipper"
+		"message": "פתח את Tolaria Clipper"
 	},
 	"commandQuickClip": {
 		"message": "גזירה מהירה"
@@ -195,20 +195,6 @@
 	"duplicate": {
 		"message": "שכפל"
 	},
-	"earlyAccessDescription": {
-		"message": "השתמש בתכונות הדורשות את $link_start$גרסת הגישה המוקדמת$link_end$ העדכנית ביותר של Obsidian. כרגע נדרש Obsidian 1.7.2 ומעלה.",
-		"placeholders": {
-			"link_end": {
-				"content": "</a>"
-			},
-			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/Obsidian/Early+access+versions\" target=\"_blank\">"
-			}
-		}
-	},
-	"earlyAccessFeatures": {
-		"message": "תכונות גישה מוקדמת"
-	},
 	"edit": {
 		"message": "עריכה"
 	},
@@ -225,7 +211,7 @@
 		"message": "משולב"
 	},
 	"enableHighlighterDescription": {
-		"message": "סמן תוכן בדפי אינטרנט שניתן לשמור ב-Obsidian"
+		"message": "סמן תוכן בדפי אינטרנט שניתן לשמור ב-Tolaria"
 	},
 	"enableInterpreter": {
 		"message": "הפעל מתרגם"
@@ -237,7 +223,7 @@
 				"content": "</a>"
 			},
 			"link_start": {
-				"content": "<a href=\"https://help.obsidian.md/web-clipper/interpreter\" target=\"_blank\">"
+				"content": "<a href=\"https://github.com/reverall/tolaria-clipper/blob/main/docs/interpreter.md\" target=\"_blank\">"
 			},
 			"strong_end": {
 				"content": "</strong>"
@@ -271,22 +257,8 @@
 	"exportProperties": {
 		"message": "ייצא מאפיינים"
 	},
-	"exportPropertiesDescription": {
-		"message": "שמור את מאפייני Web Clipper לקובץ $strong_start$types.json$strong_end$ שניתן לייבא לכספת Obsidian שלך או ל-Web Clipper במכשירים אחרים",
-		"placeholders": {
-			"strong_end": {
-				"content": "</strong>"
-			},
-			"strong_start": {
-				"content": "<strong>"
-			}
-		}
-	},
-	"extensionDescription": {
-		"message": "שמור תוכן מהאינטרנט בפורמט פרטי ובר-קיימא שניתן לגשת אליו במצב לא מקוון. הרחבת הדפדפן הרשמית של Obsidian."
-	},
 	"extensionName": {
-		"message": "Obsidian Web Clipper"
+		"message": "Tolaria Clipper"
 	},
 	"failedToCopyText": {
 		"message": "נכשל בהעתקת טקסט"
@@ -422,23 +394,6 @@
 	"importProperties": {
 		"message": "ייבא מאפיינים"
 	},
-	"importPropertiesDescription": {
-		"message": "כדי לייבא מאפיינים מ-Obsidian, מצא את הקובץ $strong_1_start$types.json$strong_1_end$ בתיקיית $strong_2_start$.obsidian$strong_2_end$ של הכספת שלך. תיקייה זו מוסתרת כברירת מחדל ברוב מערכות ההפעלה.",
-		"placeholders": {
-			"strong_1_end": {
-				"content": "</strong>"
-			},
-			"strong_1_start": {
-				"content": "<strong>"
-			},
-			"strong_2_end": {
-				"content": "</strong>"
-			},
-			"strong_2_start": {
-				"content": "<strong>"
-			}
-		}
-	},
 	"importSettings": {
 		"message": "ייבא הגדרות"
 	},
@@ -476,12 +431,6 @@
 	},
 	"lastUsed": {
 		"message": "שימוש אחרון"
-	},
-	"legacyMode": {
-		"message": "מצב מורשת"
-	},
-	"legacyModeDescription": {
-		"message": "שימוש בשיטת URI המתאימה ל-Obsidian 1.6.7 ומטה. שים/י לב שאורך התוכן מוגבל על ידי הדפדפן ומערכת ההפעלה. חלק מהדפים עלולים להיכשל ללא הודעת שגיאה."
 	},
 	"loadArticle": {
 		"message": "קרא מאמר"
@@ -975,12 +924,6 @@
 	"showPageVariables": {
 		"message": "הצג/י משתני דף"
 	},
-	"silentOpen": {
-		"message": "שמור פתקים מבלי לפתוח"
-	},
-	"silentOpenDescription": {
-		"message": "פתקים שנגזרו יישמרו אך לא ייפתחו בכרטיסייה חדשה. Obsidian עדיין יועבר לחזית."
-	},
 	"sort": {
 		"message": "מיון"
 	},
@@ -1074,7 +1017,7 @@
 		"message": "כספות"
 	},
 	"vaultsDescription": {
-		"message": "כברירת מחדל, פתקים שנגזרו נשמרים בכספת הפתוחה. תוכל/י להוסיף כספות כאן אם תרצה/י את האפשרות לשמור בכספות שונות. שם הכספת חייב להתאים בדיוק לשם כספת ה-Obsidian. לחץ/י $strong_start$enter$strong_end$ כדי להוסיף כספת.",
+		"message": "כברירת מחדל, פתקים שנגזרו נשמרים בכספת הפתוחה. תוכל/י להוסיף כספות כאן אם תרצה/י את האפשרות לשמור בכספות שונות. שם הכספת חייב להתאים בדיוק לשם כספת ה-Tolaria. לחץ/י $strong_start$enter$strong_end$ כדי להוסיף כספת.",
 		"placeholders": {
 			"strong_end": {
 				"content": "</strong>"

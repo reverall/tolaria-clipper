@@ -1,99 +1,88 @@
-Obsidian Web Clipper helps you highlight and capture the web in your favorite browser. Anything you save is stored as durable Markdown files that you can read offline, and preserve for the long term.
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+    <img src="docs/assets/logo.svg" alt="" width="112">
+  </picture>
+</p>
 
-- **[Download Web Clipper](https://obsidian.md/clipper)**
-- **[Documentation](https://help.obsidian.md/web-clipper)**
-- **[Troubleshooting](https://help.obsidian.md/web-clipper/troubleshoot)**
+<h1 align="center">Tolaria Clipper</h1>
 
-## Get started
+<p align="center">
+  A browser extension that saves web pages into a <a href="https://tolaria.md/">Tolaria</a>
+  vault as Markdown, without launching or focusing the app.<br>
+  A fork of <a href="https://github.com/obsidianmd/obsidian-clipper">obsidianmd/obsidian-clipper</a> v1.7.1.
+</p>
 
-Install the extension by downloading it from the official directory for your browser:
+## What changed from upstream
 
-- **[Chrome Web Store](https://chromewebstore.google.com/detail/obsidian-web-clipper/cnjifjpddelmedmihgijeibhnjfabmlf)** for Chrome, Brave, Arc, Orion, and other Chromium-based browsers.
-- **[Firefox Add-Ons](https://addons.mozilla.org/en-US/firefox/addon/web-clipper-obsidian/)** for Firefox and Firefox Mobile.
-- **[Safari Extensions](https://apps.apple.com/us/app/obsidian-web-clipper/id6720708363)** for macOS, iOS, and iPadOS.
-- **[Edge Add-Ons](https://microsoftedge.microsoft.com/addons/detail/obsidian-web-clipper/eigdjhmgnaaeaonimdklocfekkaanfme)** for Microsoft Edge.
+**Clipping no longer steals focus.** Upstream hands the note to the app through an
+`obsidian://new?file=…&content=…` URL, and that navigation is what brings the app to the
+front on every single clip. Tolaria's `tolaria://` links are navigation-only by design and
+have no equivalent, so this fork writes the `.md` file into the vault folder directly,
+through a native messaging host. Tolaria's filesystem watcher picks it up — app closed,
+app in the background, it does not matter. See [docs/native-host.md](docs/native-host.md).
 
-## Use the extension
+**Notes are shaped for Tolaria's model.** The first H1 in the body is the title, because
+that is what Tolaria reads for note lists, search, wikilink suggestions and tabs. Filenames
+are short kebab-case. Notes land at the vault root, since Tolaria organises by `type` and
+relationships rather than folders. `belongs_to` and `related_to` are emitted as empty keys
+so a fresh clip shows up in "to process" views. `tags:` is gone — a list of plain strings
+creates no graph edges in Tolaria, so it looked like structure without being any.
+See [docs/templates.md](docs/templates.md).
 
-Documentation is available on the [Obsidian Help site](https://help.obsidian.md/web-clipper), which covers how to use [highlighting](https://help.obsidian.md/web-clipper/highlight), [templates](https://help.obsidian.md/web-clipper/templates), [variables](https://help.obsidian.md/web-clipper/variables), [filters](https://help.obsidian.md/web-clipper/filters), and more.
+## Install
 
-## Contribute
-
-### Translations
-
-You can help translate Web Clipper into your language. Submit your translation via pull request using the format found in the [/_locales](/src/_locales) folder.
-
-### Features and bug fixes
-
-See the [help wanted](https://github.com/obsidianmd/obsidian-clipper/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) tag for issues where contributions are welcome.
-
-## Roadmap
-
-In no particular order:
-
-- [ ] Annotate highlights
-- [ ] Template directory
-- [ ] Sync settings across browsers
-- [x] A separate icon for Web Clipper (1.6.3)
-- [x] Template validation (1.1.0)
-- [x] Template logic (if/for)  (1.1.0)
-- [x] Save images locally ([Obsidian 1.8.0](https://obsidian.md/changelog/2024-12-18-desktop-v1.8.0/))
-- [x] Translate UI into more languages — help is welcomed
-
-## Developers
-
-To build the extension:
+Chrome and Arc are the supported targets. Firefox and Safari builds still compile and fall
+back to downloading a `.md` file, but the native host is not wired up for them.
 
 ```
-npm run build
+npm install
+npm run install:local
 ```
 
-This will create three directories:
-- `dist/` for the Chromium version
-- `dist_firefox/` for the Firefox version
-- `dist_safari/` for the Safari version
+That builds the extension, builds and registers the native host, and loads the extension.
+Then open `chrome://extensions`, enable **Developer mode**, and confirm the extension is
+loaded from the installed directory — **not** from `dist/`, which is rebuilt on every
+build and would break the pinned extension id. [docs/native-host.md](docs/native-host.md)
+explains why, and what to do when a clip does not land.
 
-### Install the extension locally
-
-For Chromium browsers, such as Chrome, Brave, Edge, and Arc:
-
-1. Open your browser and navigate to `chrome://extensions`
-2. Enable **Developer mode**
-3. Click **Load unpacked** and select the `dist` directory
-
-For Firefox:
-
-1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
-2. Click **Load Temporary Add-on**
-3. Navigate to the `dist_firefox` directory and select the `manifest.json` file
-
-If you want to run the extension permanently you can do so with the Nightly or Developer versions of Firefox.
-
-1. Type `about:config` in the URL bar
-2. In the Search box type `xpinstall.signatures.required`
-3. Double-click the preference, or right-click and select "Toggle", to set it to `false`.
-4. Go to `about:addons` > gear icon > **Install Add-on From File…**
-
-For iOS Simulator testing on macOS:
-
-1. Run `npm run build` to build the extension
-2. Open `xcode/Obsidian Web Clipper/Obsidian Web Clipper.xcodeproj` in Xcode
-3. Select the **Obsidian Web Clipper (iOS)** scheme from the scheme selector
-4. Choose an iOS Simulator device and click **Run** to build and launch the app
-5. Once the app is running on the simulator, open **Safari**
-6. Navigate to a webpage and tap the **Extensions** button in Safari to access the Web Clipper extension
-
-### Run tests
+Check the install at any time:
 
 ```
-npm test
+npx tolaria-clipper doctor
 ```
 
-Or run in watch mode during development:
+## Running alongside Obsidian Web Clipper
+
+Both extensions can be installed in the same browser profile. Everything they inject into
+a page — element ids, CSS classes, custom properties, the `CSS.highlights` registry entry,
+window globals, custom events — is namespaced under `tolaria-`, so the two do not fight
+over the same nodes.
+
+One thing is not solvable in code: Chrome grants a suggested keyboard shortcut to only one
+extension. Whichever you install second starts with no shortcuts, silently. This fork uses
+different defaults (`Ctrl/Cmd+Shift+Y`, `Alt+Shift+Y`, `Alt+Shift+J`, `Alt+Shift+K`) to
+reduce the overlap, but check `chrome://extensions/shortcuts` after installing.
+
+## Documentation
+
+- [Native host](docs/native-host.md) — how clips reach the vault, install and diagnostics
+- [Templates](docs/templates.md) — templates, variables and filters
+- [Interpreter](docs/interpreter.md) — extracting data with a language model
+
+## Develop
 
 ```
-npm run test:watch
+npm run build          # chrome, firefox and safari builds
+npm run build:chrome   # just chromium
+npm test               # vitest
+npm run check-strings  # report unused locale keys
 ```
+
+Builds land in `dist/`, `dist_firefox/` and `dist_safari/`.
+
+Translations live in [src/_locales](src/_locales); `en` is the source of truth and every
+other locale falls back to it for missing keys.
 
 ## Third-party libraries
 
@@ -104,6 +93,27 @@ npm run test:watch
 - [lucide](https://github.com/lucide-icons/lucide) for icons
 - [dompurify](https://github.com/cure53/DOMPurify) for sanitizing HTML
 
-## License
+## Thanks
 
-Obsidian Web Clipper source code is open source under the MIT License. All trademarks, icons, marketing copy, and other marketing assets are excluded from that license.
+This is a fork of [Obsidian Web Clipper](https://github.com/obsidianmd/obsidian-clipper),
+built by [@kepano](https://github.com/kepano) and the Obsidian team, and released under the
+MIT licence.
+
+Nearly everything worth using here came from them: the content extraction, the template
+engine with its variables and 54 filters, the reader mode, the highlighter, the interpreter,
+and translations into 36 languages. Years of work on the hard parts of turning a web page
+into a decent Markdown note — including [Defuddle](https://github.com/kepano/defuddle),
+which does the extraction and is a fine library in its own right.
+
+What this fork changes is narrow by comparison: where the note goes, and the shape it takes
+once it gets there. Everything else is theirs.
+
+Thank you.
+
+## Licence
+
+MIT, inherited from [obsidianmd/obsidian-clipper](https://github.com/obsidianmd/obsidian-clipper);
+see [LICENSE](LICENSE), which keeps the original copyright notice alongside this fork's.
+
+Obsidian's trademarks, icons and marketing assets are excluded from that licence and are
+not present in this repository — the icons and the in-app mark are Tolaria's.

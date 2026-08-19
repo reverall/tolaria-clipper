@@ -6,7 +6,6 @@ export type { Settings, ModelConfig, PropertyType, HistoryEntry, Provider, Ratin
 
 export let generalSettings: Settings = {
 	vaults: [],
-	betaFeatures: false,
 	openAfterSave: false,
 	notifyTolariaBridge: false,
 	dailyNotePath: '',
@@ -41,7 +40,7 @@ export let generalSettings: Settings = {
 		customCss: ''
 	},
 	stats: {
-		addToObsidian: 0,
+		addToTolaria: 0,
 		saveFile: 0,
 		copyToClipboard: 0,
 		share: 0,
@@ -49,7 +48,7 @@ export let generalSettings: Settings = {
 	},
 	history: [],
 	ratings: [],
-	saveBehavior: 'addToObsidian'
+	saveBehavior: 'addToTolaria'
 };
 
 export function setLocalStorage(key: string, value: any): Promise<void> {
@@ -63,13 +62,13 @@ export function getLocalStorage(key: string): Promise<any> {
 interface StorageData {
 	general_settings?: {
 		showMoreActionsButton?: boolean;
-		betaFeatures?: boolean;
 		openAfterSave?: boolean;
 		notifyTolariaBridge?: boolean;
 		dailyNotePath?: string;
 		dailyNoteFormat?: string;
 		openBehavior?: boolean | 'popup' | 'embedded';
-		saveBehavior?: 'addToObsidian' | 'copyToClipboard' | 'saveFile';
+		// `addToObsidian` is the pre-v3 spelling; see migrateToV3.
+		saveBehavior?: 'addToTolaria' | 'addToObsidian' | 'copyToClipboard' | 'saveFile';
 	};
 	vaults?: string[];
 	highlighter_settings?: {
@@ -104,7 +103,9 @@ interface StorageData {
 	};
 	property_types?: PropertyType[];
 	stats?: {
-		addToObsidian: number;
+		addToTolaria?: number;
+		/** Pre-v3 spelling of `addToTolaria`; see migrateToV3. */
+		addToObsidian?: number;
 		saveFile: number;
 		copyToClipboard: number;
 		share: number;
@@ -115,17 +116,77 @@ interface StorageData {
 	migrationVersion?: number;
 }
 
-const CURRENT_MIGRATION_VERSION = 2;
+const CURRENT_MIGRATION_VERSION = 3;
+
+/**
+ * v3 renames the `addToObsidian` action to `addToTolaria`.
+ *
+ * That token is a stored *value*, not just a symbol: it is the clip counter's
+ * key, the saved default action, and the discriminator on every history entry.
+ * Renaming it without this migration silently zeroes the counter and drops the
+ * main button back to its default label.
+ *
+ * History is the awkward part — `StorageData` declares it under sync, but
+ * `addHistoryEntry` writes it to local. Both locations are rewritten here.
+ *
+ * Reader custom CSS is rewritten too: it is user-authored and targets the
+ * class names the same changeset renames.
+ */
+export async function migrateToV3(data: StorageData): Promise<void> {
+	const syncPatch: Record<string, unknown> = {};
+
+	const legacyStat = data.stats?.addToObsidian;
+	if (typeof legacyStat === 'number') {
+		const { addToObsidian: _dropped, ...rest } = data.stats!;
+		syncPatch.stats = { ...rest, addToTolaria: data.stats!.addToTolaria ?? legacyStat };
+	}
+
+	if (data.general_settings?.saveBehavior === 'addToObsidian') {
+		syncPatch.general_settings = { ...data.general_settings, saveBehavior: 'addToTolaria' };
+	}
+
+	const customCss = data.reader_settings?.customCss;
+	if (customCss?.includes('obsidian-')) {
+		syncPatch.reader_settings = {
+			...data.reader_settings,
+			customCss: customCss.replace(/obsidian-/g, 'tolaria-'),
+		};
+	}
+
+	const syncHistory = migrateHistoryActions(data.history);
+	if (syncHistory) syncPatch.history = syncHistory;
+
+	if (Object.keys(syncPatch).length > 0) {
+		await browser.storage.sync.set(syncPatch);
+	}
+
+	const local = await browser.storage.local.get('history');
+	const localHistory = migrateHistoryActions(local.history as HistoryEntry[] | undefined);
+	if (localHistory) {
+		await browser.storage.local.set({ history: localHistory });
+	}
+}
+
+/** Returns a rewritten history, or null when there is nothing to rewrite. */
+function migrateHistoryActions(history?: HistoryEntry[]): HistoryEntry[] | null {
+	if (!Array.isArray(history)) return null;
+	let changed = false;
+	const migrated = history.map(entry => {
+		if ((entry?.action as string) !== 'addToObsidian') return entry;
+		changed = true;
+		return { ...entry, action: 'addToTolaria' as const };
+	});
+	return changed ? migrated : null;
+}
 
 export async function loadSettings(): Promise<Settings> {
 	const data = await browser.storage.sync.get(null) as StorageData;
-	
+
 	// Load default settings first
 	const defaultSettings: Settings = {
 		vaults: [],
 		showMoreActionsButton: false,
-		betaFeatures: false,
-		openAfterSave: false,
+			openAfterSave: false,
 		notifyTolariaBridge: false,
 		dailyNotePath: '',
 		dailyNoteFormat: 'YYYY-MM-DD',
@@ -140,7 +201,7 @@ export async function loadSettings(): Promise<Settings> {
 		interpreterAutoRun: false,
 		defaultPromptContext: '',
 		propertyTypes: [],
-		saveBehavior: 'addToObsidian',
+		saveBehavior: 'addToTolaria',
 		readerSettings: {
 			fontSize: 16,
 			lineHeight: 1.6,
@@ -159,7 +220,7 @@ export async function loadSettings(): Promise<Settings> {
 			customCss: ''
 		},
 		stats: {
-			addToObsidian: 0,
+			addToTolaria: 0,
 			saveFile: 0,
 			copyToClipboard: 0,
 			share: 0,
@@ -169,8 +230,13 @@ export async function loadSettings(): Promise<Settings> {
 		ratings: [],
 	};
 
-	// Update migration version if needed
+	// Run migrations before stamping the version, so a failure part-way through
+	// leaves the old version in place and the next load retries.
 	if (!data.migrationVersion || data.migrationVersion < CURRENT_MIGRATION_VERSION) {
+		if (!data.migrationVersion || data.migrationVersion < 3) {
+			await migrateToV3(data);
+			Object.assign(data, await browser.storage.sync.get(null) as StorageData);
+		}
 		await browser.storage.sync.set({ migrationVersion: CURRENT_MIGRATION_VERSION });
 		debugLog('Settings', `Updated migration version to ${CURRENT_MIGRATION_VERSION}`);
 	}
@@ -180,15 +246,23 @@ export async function loadSettings(): Promise<Settings> {
 	const sanitizedModels = Array.isArray(data.interpreter_settings?.models) 
 		? data.interpreter_settings.models.filter(m => m && typeof m === 'object' && typeof m.id === 'string') 
 		: [];
-	const sanitizedProviders = Array.isArray(data.interpreter_settings?.providers) 
-		? data.interpreter_settings.providers.filter(p => p && typeof p === 'object' && typeof p.id === 'string') 
+	const sanitizedProviders = Array.isArray(data.interpreter_settings?.providers)
+		? data.interpreter_settings.providers.filter(p => p && typeof p === 'object' && typeof p.id === 'string')
 		: [];
+
+	// Keep reading the pre-v3 key even after the migration has run: storage.sync
+	// propagates between devices, and one still on an older build will push the
+	// old spelling back. Cheaper than losing the counter.
+	const { addToObsidian: legacyClipCount, ...incomingStats } =
+		data.stats ?? ({} as NonNullable<StorageData['stats']>);
+	const storedSaveBehavior = data.general_settings?.saveBehavior === 'addToObsidian'
+		? 'addToTolaria'
+		: data.general_settings?.saveBehavior;
 
 	// Load user settings
 	const loadedSettings: Settings = {
 		vaults: sanitizedVaults.length > 0 ? sanitizedVaults : defaultSettings.vaults,
 		showMoreActionsButton: data.general_settings?.showMoreActionsButton ?? defaultSettings.showMoreActionsButton,
-		betaFeatures: data.general_settings?.betaFeatures ?? defaultSettings.betaFeatures,
 		openAfterSave: data.general_settings?.openAfterSave ?? defaultSettings.openAfterSave,
 		notifyTolariaBridge: data.general_settings?.notifyTolariaBridge ?? defaultSettings.notifyTolariaBridge,
 		dailyNotePath: data.general_settings?.dailyNotePath ?? defaultSettings.dailyNotePath,
@@ -223,10 +297,14 @@ export async function loadSettings(): Promise<Settings> {
 			highlightActiveLine: data.reader_settings?.highlightActiveLine ?? defaultSettings.readerSettings.highlightActiveLine,
 			customCss: data.reader_settings?.customCss ?? defaultSettings.readerSettings.customCss
 		},
-		stats: { ...defaultSettings.stats, ...data.stats },
+		stats: {
+			...defaultSettings.stats,
+			...incomingStats,
+			addToTolaria: incomingStats.addToTolaria ?? legacyClipCount ?? defaultSettings.stats.addToTolaria
+		},
 		history: data.history || defaultSettings.history,
 		ratings: data.ratings || defaultSettings.ratings,
-		saveBehavior: data.general_settings?.saveBehavior ?? defaultSettings.saveBehavior
+		saveBehavior: storedSaveBehavior ?? defaultSettings.saveBehavior
 	};
 
 	generalSettings = loadedSettings;
@@ -243,7 +321,6 @@ export async function saveSettings(settings?: Partial<Settings>): Promise<void> 
 		vaults: generalSettings.vaults,
 		general_settings: {
 			showMoreActionsButton: generalSettings.showMoreActionsButton,
-			betaFeatures: generalSettings.betaFeatures,
 			openAfterSave: generalSettings.openAfterSave,
 			notifyTolariaBridge: generalSettings.notifyTolariaBridge,
 			dailyNotePath: generalSettings.dailyNotePath,

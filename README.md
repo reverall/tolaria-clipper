@@ -93,6 +93,23 @@ other locale falls back to it for missing keys.
 - [lucide](https://github.com/lucide-icons/lucide) for icons
 - [dompurify](https://github.com/cure53/DOMPurify) for sanitizing HTML
 
+## Thanks
+
+This is a fork of [Obsidian Web Clipper](https://github.com/obsidianmd/obsidian-clipper),
+built by [@kepano](https://github.com/kepano) and the Obsidian team, and released under the
+MIT licence.
+
+Nearly everything worth using here came from them: the content extraction, the template
+engine with its variables and 53 filters, the reader mode, the highlighter, the interpreter,
+and translations into 36 languages. Years of work on the hard parts of turning a web page
+into a decent Markdown note — including [Defuddle](https://github.com/kepano/defuddle),
+which does the extraction and is a fine library in its own right.
+
+What this fork changes is narrow by comparison: where the note goes, and the shape it takes
+once it gets there. Everything else is theirs.
+
+Thank you.
+
 ## Licence
 
 MIT, inherited from [obsidianmd/obsidian-clipper](https://github.com/obsidianmd/obsidian-clipper);

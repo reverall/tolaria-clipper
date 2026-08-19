@@ -1,10 +1,17 @@
-# Tolaria Clipper
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+    <img src="docs/assets/logo.svg" alt="" width="112">
+  </picture>
+</p>
 
-A browser extension that saves web pages into a [Tolaria](https://tolaria.md/) vault
-as Markdown, without launching or focusing the app.
+<h1 align="center">Tolaria Clipper</h1>
 
-It is a fork of [obsidianmd/obsidian-clipper](https://github.com/obsidianmd/obsidian-clipper)
-v1.7.1, rebuilt around two things Obsidian's clipper does differently.
+<p align="center">
+  A browser extension that saves web pages into a <a href="https://tolaria.md/">Tolaria</a>
+  vault as Markdown, without launching or focusing the app.<br>
+  A fork of <a href="https://github.com/obsidianmd/obsidian-clipper">obsidianmd/obsidian-clipper</a> v1.7.1.
+</p>
 
 ## What changed from upstream
 

@@ -29,6 +29,11 @@ JSON_FILES=(
 
 PBXPROJ="xcode/Tolaria Clipper/Tolaria Clipper.xcodeproj/project.pbxproj"
 
+# The native host reports its own version in `doctor` and in every ping reply.
+# It is a plain constant rather than a read of package.json, because the host
+# is bundled and ships without one.
+HOST_VERSION_FILE="src/native-host/doctor.ts"
+
 echo "Bumping version to $NEW_VERSION"
 echo ""
 
@@ -43,6 +48,16 @@ for file in "${JSON_FILES[@]}"; do
 	sed -i '' "s/\"version\": \"$old_version\"/\"version\": \"$NEW_VERSION\"/" "$filepath"
 	echo "Updated $file: $old_version -> $NEW_VERSION"
 done
+
+# Update the native host's own version string
+hostpath="$ROOT_DIR/$HOST_VERSION_FILE"
+if [ -f "$hostpath" ]; then
+	old_host=$(grep -o "HOST_VERSION = '[^']*'" "$hostpath" | head -1 | sed "s/HOST_VERSION = '//;s/'//")
+	sed -i '' "s/HOST_VERSION = '$old_host'/HOST_VERSION = '$NEW_VERSION'/" "$hostpath"
+	echo "Updated $HOST_VERSION_FILE: $old_host -> $NEW_VERSION"
+else
+	echo "Skipped $HOST_VERSION_FILE: not present"
+fi
 
 pbxpath="$ROOT_DIR/$PBXPROJ"
 if [ -f "$pbxpath" ]; then

@@ -1,6 +1,7 @@
 // Installs and removes the native messaging host.
 //
-// Reached through the CLI: `npx tolaria-clipper install-host`.
+// Reached from a checkout through `node dist/cli.cjs install-host`, and from
+// the downloadable archive through `node connect.cjs`.
 
 import { execFileSync } from 'node:child_process';
 import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -11,7 +12,7 @@ import { BrowserTarget, WINDOWS_REGISTRY_KEYS, browserTargets, extensionInstallD
 import { HOST_NAME } from './protocol';
 
 /** Node build outputs that share dist/ with the extension but are not part of it. */
-const NODE_ARTIFACTS = new Set(['cli.cjs', 'api.mjs', 'native-host.cjs']);
+const NODE_ARTIFACTS = new Set(['cli.cjs', 'api.mjs', 'native-host.cjs', 'connect.cjs']);
 
 /**
  * Extension IDs allowed to talk to the host.

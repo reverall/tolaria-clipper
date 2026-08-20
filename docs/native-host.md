@@ -21,7 +21,25 @@ always send one.
 
 ## Install
 
-From a checkout, one command builds and installs everything:
+### From the archive
+
+The downloadable archive carries the extension and one file that registers the
+host:
+
+```sh
+node connect.cjs             # register with Chrome and Arc
+node connect.cjs doctor      # diagnose
+node connect.cjs disconnect  # remove
+```
+
+It takes the same flags as `install-host` below — `--dry-run`, `--browsers=`,
+`--extension-id`. The host bundle is embedded in `connect.cjs` itself, so the
+archive has nothing else to keep together, and it installs to the same place a
+checkout would. Loading the extension is left to you; see the README.
+
+### From a checkout
+
+One command builds and installs everything:
 
 ```sh
 npm run install:local
@@ -54,7 +72,7 @@ disappear entirely — at which point Chrome disables the extension.
 So `install-extension` copies the build to a stable location:
 
 ```sh
-npx tolaria-clipper install-extension [--from <dir>] [--dry-run]
+node dist/cli.cjs install-extension [--from <dir>] [--dry-run]
 ```
 
 ```
@@ -99,7 +117,7 @@ If you later change Node versions and the helper stops responding, re-run
 ## Diagnose
 
 ```sh
-npx tolaria-clipper doctor
+node dist/cli.cjs doctor   # or: node connect.cjs doctor
 ```
 
 Reports the resolved Node and host paths, which browser manifests exist and
@@ -112,7 +130,7 @@ connection → Check again**.
 ## Remove
 
 ```sh
-npx tolaria-clipper uninstall-host
+node dist/cli.cjs uninstall-host   # or: node connect.cjs disconnect
 ```
 
 Removes the browser manifests and `~/.tolaria-clipper/host/`.

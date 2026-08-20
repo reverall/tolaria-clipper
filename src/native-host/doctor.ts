@@ -48,12 +48,12 @@ export async function runDoctor(): Promise<DoctorResult> {
 		});
 
 	if (!manifests.some(m => m.present)) {
-		warnings.push('No native messaging manifest found. Run: npx tolaria-clipper install-host');
+		warnings.push('No native messaging manifest found. Run: node connect.cjs');
 	}
 
 	const launcher = hostLauncherPath();
 	if (!existsSync(launcher)) {
-		warnings.push(`Host launcher missing at ${launcher}. Run: npx tolaria-clipper install-host`);
+		warnings.push(`Host launcher missing at ${launcher}. Run: node connect.cjs`);
 	}
 
 	if (vaults.length === 0) {

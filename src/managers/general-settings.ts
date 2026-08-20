@@ -313,7 +313,7 @@ async function refreshHostStatus(forceRefresh = false): Promise<void> {
 	statusEl.appendChild(help);
 
 	const command = createElementWithClass('code', 'host-setup-banner-command');
-	command.textContent = 'npx tolaria-clipper install-host';
+	command.textContent = 'node connect.cjs';
 	command.addEventListener('click', () => {
 		navigator.clipboard.writeText(command.textContent || '').catch(() => { /* clipboard may be blocked */ });
 	});

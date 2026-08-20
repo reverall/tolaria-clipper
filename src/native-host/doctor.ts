@@ -10,7 +10,8 @@ import { browserTargets, hostInstallDir, hostLauncherPath } from './browsers';
 import { isWritableDir } from './fs-ops';
 import { loadVaults } from './vaults';
 
-export const HOST_VERSION = '1.7.1';
+/** Kept in step with package.json by scripts/bump-version.sh. */
+export const HOST_VERSION = '1.8.0';
 
 export async function runDoctor(): Promise<DoctorResult> {
 	const warnings: string[] = [];

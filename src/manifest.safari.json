@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Tolaria Clipper",
 	"homepage_url": "https://tolaria.md/",
-	"version": "1.7.1",
+	"version": "1.8.0",
 	"description": "Save and highlight web pages straight into your Tolaria vault, in a private and durable format you can access offline.",
 	"permissions": [
 		"activeTab",

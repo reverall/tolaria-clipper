@@ -1,6 +1,6 @@
 {
 	"name": "tolaria-clipper",
-	"version": "1.7.1",
+	"version": "1.8.0",
 	"description": "Web clipper for Tolaria. Saves pages straight into your vault, without launching the app.",
 	"bin": {
 		"tolaria-clipper": "./dist/cli.cjs"

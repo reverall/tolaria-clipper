@@ -13,6 +13,41 @@
   A fork of <a href="https://github.com/obsidianmd/obsidian-clipper">obsidianmd/obsidian-clipper</a> v1.7.1.
 </p>
 
+## What it does
+
+Tolaria Clipper turns the page you are reading into a Markdown note in your vault. It pulls
+out the article — headings, code, tables, images — leaves the navigation and the cookie
+banners behind, runs it through a template you control, and writes the file.
+
+It exists because clipping should not interrupt reading. The note goes straight into the
+vault folder and Tolaria's filesystem watcher picks it up on its own, so the app never comes
+to the front — it does not even have to be running. You stay on the page you were reading.
+
+## Features
+
+- **Writes straight into the vault**, through a native messaging host, so a clip never
+  launches or focuses Tolaria — [docs/native-host.md](docs/native-host.md)
+- **Notes shaped for Tolaria**: the H1 carries the title, filenames are short kebab-case,
+  notes land at the vault root, `belongs_to` and `related_to` are left as empty keys to fill
+  in later
+- **Several vaults**, read from Tolaria's own registry — never a path handed over by the
+  browser
+- **Clip the whole page, the current selection, or the passages you highlighted**, depending
+  on what the template asks for
+- **Highlighter** that persists per page and comes back on your next visit
+- **Reader mode** that strips a page down to its text before you clip it
+- **Templates per site**, triggered by URL or by schema.org data, with typed properties,
+  page variables, meta tags and 54 filters — [docs/templates.md](docs/templates.md)
+- **Behaviours**: create a note, append or prepend to an existing one, overwrite it, or add
+  to the daily note
+- **Interpreter**: fill template fields with a language model, twelve providers preconfigured
+  and Ollama for a local one — [docs/interpreter.md](docs/interpreter.md)
+- **Keyboard shortcuts, context menu and a side panel**
+- **Copy as Markdown** to the clipboard, without saving anything
+- **A CLI and a Node API**, for clipping from scripts
+- **36 languages**
+- **Nothing leaves your machine**, apart from the interpreter requests you configure yourself
+
 ## What changed from upstream
 
 **Clipping no longer steals focus.** Upstream hands the note to the app through an
@@ -32,24 +67,53 @@ See [docs/templates.md](docs/templates.md).
 
 ## Install
 
-Chrome and Arc are the supported targets. Firefox and Safari builds still compile and fall
-back to downloading a `.md` file, but the native host is not wired up for them.
+**Not on the Chrome Web Store yet.** For now the extension installs in developer mode, from
+a downloaded archive or from a checkout. Chrome and Arc are the supported targets; Firefox
+and Safari builds still compile and fall back to downloading a `.md` file, but the native
+host is not wired up for them.
+
+### From the archive
+
+1. Download `tolaria-clipper-<version>.zip` from
+   [the latest release](https://github.com/reverall/tolaria-clipper/releases/latest) and
+   unzip it **somewhere permanent**. Chrome stores the path to an unpacked extension rather
+   than its contents, so one loaded from `~/Downloads` stops working the day you tidy up.
+2. Open `chrome://extensions` (or `arc://extensions`), enable **Developer mode**, click
+   **Load unpacked**, and select the `extension/` folder from the archive.
+3. From the unzipped folder, once:
+
+   ```
+   node connect.cjs
+   ```
+
+   That registers the native host with your browsers. It needs Node 18 or later, and it
+   cannot be a file you simply copy: Chrome requires an absolute path to the helper, and the
+   helper an absolute path to Node, neither of which is knowable before the archive reaches
+   your machine.
+4. Clip a page. Tolaria should not come to the front.
+
+The extension id is pinned by the manifest's `key` field, so moving the folder and loading
+it again keeps the host registration valid. To update, replace `extension/` with the one
+from the new archive and press **Reload** on the extension card.
+
+### From source
 
 ```
 npm install
 npm run install:local
 ```
 
-That builds the extension, builds and registers the native host, and loads the extension.
-Then open `chrome://extensions`, enable **Developer mode**, and confirm the extension is
-loaded from the installed directory — **not** from `dist/`, which is rebuilt on every
-build and would break the pinned extension id. [docs/native-host.md](docs/native-host.md)
-explains why, and what to do when a clip does not land.
+That builds the extension, builds and registers the native host, and copies the extension to
+a stable directory. Then open `chrome://extensions`, enable **Developer mode**, and load it
+from that directory — **not** from `dist/`, which is rebuilt on every build and would break
+the pinned extension id. [docs/native-host.md](docs/native-host.md) explains why, and what to
+do when a clip does not land.
 
-Check the install at any time:
+### Check the install
 
 ```
-npx tolaria-clipper doctor
+node connect.cjs doctor    # from the archive
+node dist/cli.cjs doctor   # from a checkout
 ```
 
 ## Running alongside Obsidian Web Clipper
@@ -75,11 +139,14 @@ reduce the overlap, but check `chrome://extensions/shortcuts` after installing.
 ```
 npm run build          # chrome, firefox and safari builds
 npm run build:chrome   # just chromium
+npm run package        # the downloadable archive, into builds/
 npm test               # vitest
 npm run check-strings  # report unused locale keys
 ```
 
-Builds land in `dist/`, `dist_firefox/` and `dist_safari/`.
+Builds land in `dist/`, `dist_firefox/` and `dist_safari/`. `package` wipes `dist/` first,
+so what it copies into the archive is the extension and nothing else; it leaves
+`builds/tolaria-clipper-<version>.zip` ready to attach to a release.
 
 Translations live in [src/_locales](src/_locales); `en` is the source of truth and every
 other locale falls back to it for missing keys.

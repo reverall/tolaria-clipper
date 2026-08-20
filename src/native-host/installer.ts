@@ -12,7 +12,7 @@ import { BrowserTarget, WINDOWS_REGISTRY_KEYS, browserTargets, extensionInstallD
 import { HOST_NAME } from './protocol';
 
 /** Node build outputs that share dist/ with the extension but are not part of it. */
-const NODE_ARTIFACTS = new Set(['cli.cjs', 'api.mjs', 'native-host.cjs']);
+const NODE_ARTIFACTS = new Set(['cli.cjs', 'api.mjs', 'native-host.cjs', 'connect.cjs']);
 
 /**
  * Extension IDs allowed to talk to the host.

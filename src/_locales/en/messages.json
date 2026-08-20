@@ -450,7 +450,7 @@
 		"message": "The vault folder is unavailable. Is the drive connected?"
 	},
 	"hostVersionMismatch": {
-		"message": "The Tolaria helper is out of date. Reinstall it with npx tolaria-clipper install-host."
+		"message": "The Tolaria helper is out of date. Reinstall it with node connect.cjs."
 	},
 	"hostWriteFailed": {
 		"message": "Could not write the note to your vault."
